@@ -101,7 +101,7 @@ npm run build                      # 프로덕션 빌드
 | PHP 경로 | `%LOCALAPPDATA%\Microsoft\WinGet\Packages\PHP.PHP.8.4_Microsoft.Winget.Source_8wekyb3d8bbwe\` |
 | `php.ini` | 위 경로. `php.ini-development` 복사본에 확장 활성화 |
 | 활성 확장 | curl, fileinfo, gd, intl, mbstring, openssl, pdo_pgsql, pdo_sqlite, pgsql, sqlite3, zip |
-| Composer | 2.10.2 (`C:\Users\kimim\bin\composer.phar` + `composer.bat`) |
+| Composer | 2.10.2 (`%USERPROFILE%\bin\composer.phar` + `composer.bat`) |
 | Node / npm | 24.16.0 / 11.13.0 |
 | SQLite DB | `database/database.sqlite` |
 | PostgreSQL | 18.6 — `C:\Program Files\PostgreSQL\18\`, 포트 5432 |
