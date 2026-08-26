@@ -1,58 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 쇼핑몰 (Shop)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel 13 + Inertia + Vue 3 로 만든 한국형 커머스. 상품 노출부터 장바구니 · 주문 · 결제 ·
+배송 · 반품까지 한 바퀴가 실제로 돌아간다.
 
-## About Laravel
+**개인 학습·포트폴리오 목적의 로컬 프로젝트다.** 배포되어 있지 않고, 실제 결제(PG)는
+연동되어 있지 않다. 아래 [현재 상태](#현재-상태)에 무엇이 되고 무엇이 안 되는지 정리해 뒀다.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 기술 스택
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| 영역 | 선택 | 버전 |
+|---|---|---|
+| 런타임 | PHP | 8.4 |
+| 백엔드 | Laravel | 13.x |
+| 프론트 연결 | Inertia.js | 3.x |
+| 프론트 | Vue 3 (Composition API, `<script setup>`) | 3.5.x |
+| 스타일 | Tailwind CSS | 4.x |
+| 번들러 | Vite | 8.x |
+| DB | PostgreSQL | 18.x (SQLite 로 전환 가능) |
+| 인증 (고객) | Laravel Fortify | 1.x |
+| 인증 (관리자) | 직접 구현 (`admin` 가드) | — |
+| 간편로그인 | Laravel Socialite (카카오 · 네이버) | 5.x |
 
-## Learning Laravel
+별도 API 서버가 없는 모놀리식 SPA다. 라우팅은 Laravel 이 소유하고 Inertia 가 Vue 화면을 그린다.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+규모: 테이블 31개 · 마이그레이션 26개 · 모델 30개 · 라이브러리 28개 · Vue 페이지 45개
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 주요 기능
 
-## Agentic Development
+### 고객
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- **상품** — 조합형 옵션(최대 3단계). 1단계를 고르면 2단계 후보가 필터되고, 품절 조합은
+  선택 자체가 막힌다. 갤러리 이미지와 상세 설명 이미지를 분리해서 관리한다.
+- **장바구니** — 비회원도 담을 수 있고, 로그인하면 세션 장바구니가 회원 장바구니로 합쳐진다.
+- **주문** — 장바구니 주문과 바로구매 두 경로. 주문 시 재고를 **예약**하고, 결제 기한이 지나면
+  스케줄러가 자동 취소하며 예약을 푼다. **구매는 회원만 가능**하다.
+- **결제** — 무통장입금. 계좌 정보를 주문 시점 스냅샷으로 저장한다.
+- **배송** — 택배사별 송장 조회 링크.
+- **반품 · 교환** — 부분 반품, 귀책(고객/판매자)에 따른 배송비 처리, 쿠폰 할인 안분 계산.
+- **쿠폰** — 정액 · 정률(상한), 최소 주문금액, 가입 시 자동 발급, 코드 등록.
+- **후기 · 평점** — **구매자만** 작성 가능(주문 항목당 1건, 배송완료 후). 판매자 답글.
+- **상품 Q&A** — 공개 문의. 비밀글은 서버가 내용을 지워서 내려보낸다.
+- **1:1 문의**, **배송지록**(회원당 여러 개), **내 정보**(전화번호 · 마케팅 수신동의).
+- **간편로그인** — 카카오 · 네이버.
+
+### 관리자
+
+역할(Role) 기반 메뉴 권한으로 화면과 API 를 함께 통제한다.
+
+- **대시보드** — 처리 대기 현황, 매출 요약, 일별 그래프, 인기 상품, 재고 부족, 최근 주문
+- **상단 알림** — 어느 화면에 있든 처리할 일(미답변 문의, 출고 대기, 반품 접수 등)을 배지로 표시
+- **상품 관리** — 옵션 조합 생성, 조합별 재고/SKU, 이미지 업로드
+- **주문 · 배송 · 반품 · 무통장 입금 확인**
+- **매출통계** — 기간별 요약, 일별 추이, 상품별 · 카테고리별
+- **회원 관리** — 주문 · 결제 · 문의 · 쿠폰 · 메모를 한 모달에서
+- **쿠폰 · 카테고리 · 배송비 정책 · 입금 계좌 · 권한 · 관리자 계정 설정**
+
+---
+
+## 시작하기
+
+### 요구사항
+
+PHP 8.4 · Composer · Node.js 20+ · PostgreSQL 18 (또는 SQLite)
+
+### 설치
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/kimiman0627-hub/shop.git
+cd shop
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+`.env` 에서 DB 접속 정보를 채운다. PostgreSQL 을 쓰는 경우:
 
-## Contributing
+```bash
+createdb shop
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+SQLite 로 간단히 돌리려면 `.env` 에서 `DB_CONNECTION=sqlite` 한 줄만 바꾸고
+`database/database.sqlite` 파일을 만들면 된다. **모든 마이그레이션이 양쪽에서 무수정으로 돈다.**
 
-## Code of Conduct
+### 실행
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan migrate --seed   # 테이블 생성 + 운영에 필요한 기본 데이터
+php artisan shop:demo        # 데모 데이터 (상품·주문·후기 등) — 로컬 전용
+npm run build
+php artisan dev              # 서버 + Vite + 큐 + 로그를 한 번에
+```
 
-## Security Vulnerabilities
+`http://localhost:8000` — 고객 화면, `http://localhost:8000/admin` — 관리자 화면.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> **`php artisan dev` 에 스케줄러는 포함되지 않는다.** 재고 예약 만료를 확인하려면
+> 별도 터미널에서 `php artisan schedule:work` 를 띄운다. 이게 안 돌면 입금하지 않은 주문이
+> 재고를 계속 물고 있고, 매출 집계도 갱신되지 않는다.
 
-## License
+### 데모 계정
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+`shop:demo` 로 만들어지는 **로컬 전용** 계정이다.
+
+| 구분 | 계정 | 비밀번호 |
+|---|---|---|
+| 최고관리자 | `superadmin` | `admin-local-1234` |
+| 운영자 (권한 제한) | `manager1` | `manager-local-1234` |
+| 고객 | `seoyeon@example.com` 외 3명 | `demo-local-1234` |
+
+운영자 계정은 권한 분리가 실제로 걸리는지 확인하는 용도다(관리자설정 메뉴에 접근할 수 없다).
+
+### 간편로그인 (선택)
+
+카카오 · 네이버 개발자센터에서 앱을 만들고 `.env` 를 채우면 로그인 화면에 버튼이 나타난다.
+**비워두면 버튼 자체가 렌더링되지 않는다** — 눌러도 실패할 버튼을 남기지 않기 위해서다.
+
+```
+KAKAO_CLIENT_ID=      # Redirect URI: {APP_URL}/login/kakao/callback
+KAKAO_CLIENT_SECRET=
+NAVER_CLIENT_ID=      # Callback URL: {APP_URL}/login/naver/callback
+NAVER_CLIENT_SECRET=
+```
+
+카카오는 개인 개발자 앱에서 이메일 동의항목 권한이 없다(비즈 앱 전환 필요). 이 경우
+이메일을 받지 못하므로 **가입 직전에 추가 입력 화면**을 거친다.
+
+### 아티즌 커맨드
+
+```bash
+php artisan shop:demo --fresh       # DB 초기화 + 데모 데이터
+php artisan shop:expire-orders      # 기한 지난 주문 취소 + 재고 예약 해제
+php artisan shop:aggregate-sales    # 일별 매출 집계 갱신 (--all 로 전 기간)
+```
+
+---
+
+## 설계에서 신경 쓴 것
+
+이 프로젝트에서 의도적으로 지킨 규칙들이다. 자세한 이유는 [`docs/worklog.md`](docs/worklog.md) 에 있다.
+
+**재고는 예약 방식이다.** `stock_quantity`(실물)와 `reserved_quantity`(결제 진행 중)를 나눠서
+관리하고, 판매가능 수량은 저장하지 않고 계산한다. 주문 생성 시 조합을 id 순으로 잠가
+데드락을 피한다 — 재고 1개에 5개 프로세스가 동시에 주문해도 정확히 1건만 성공한다.
+
+**주문서는 스냅샷이다.** 상품명 · 가격 · 배송지 · 입금 계좌를 주문 시점 값으로 복사해 둔다.
+나중에 상품명이나 계좌가 바뀌어도 과거 주문서는 그대로다.
+
+**컨트롤러는 얇다.** 조회 · 계산 · 트랜잭션은 전부 `app/Libraries/` 에서 한다. 라이브러리는
+`Request` / `Session` / `Auth` / `Inertia` 에 의존하지 않아서 커맨드 · 스케줄러 · 시더가
+같은 코드를 재사용한다. 데모 데이터도 전부 라이브러리를 거쳐 만든다.
+
+**DB 이식성을 지킨다.** `DB::raw` · `whereRaw` · DB 고유 함수를 쓰지 않는다. SQLite 로
+개발하다 PostgreSQL 로 옮길 때 마이그레이션 전량이 무수정으로 통과했다.
+
+**관리자와 고객은 계정 체계부터 분리한다.** 테이블 · 가드 · 라우트 · 미들웨어가 전부 다르다.
+`users.is_admin` 같은 플래그를 쓰지 않는다.
+
+**권한은 화면이 아니라 서버가 막는다.** 메뉴를 숨기는 것과 접근을 막는 것은 별개다 —
+대시보드 카드와 상단 알림도 권한별로 걸러서 내려간다.
+
+---
+
+## 프로젝트 구조
+
+```
+app/
+  Libraries/          ★ 조회 · 가공 · 트랜잭션. 실제 로직은 전부 여기
+  Http/Controllers/   Store/ (고객) · Admin/ (관리자)
+  Http/Requests/      검증은 전부 FormRequest
+  Models/  Enums/  Listeners/  Console/Commands/
+config/
+  shop.php            쇼핑몰 공통 설정 (배송·반품·결제 기한 등)
+  admin/menu.php      관리자 메뉴 정의 — 권한의 원천
+resources/js/
+  Pages/Store/  Pages/Admin/    Inertia 페이지 (라우트와 1:1)
+  Components/  Layouts/
+routes/
+  web.php             고객 라우트
+  admin.php           관리자 라우트
+docs/
+  tables.md           테이블 31개 레퍼런스 (컬럼 설명 포함)
+  schema-draft.md     설계 의도 · 결정 사항
+  worklog.md          "왜 그렇게 했는가" + 밟은 함정 26개
+```
+
+---
+
+## 문서
+
+| 문서 | 내용 |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | 작업 규칙 · 기술 스택 · 남은 작업 체크리스트 |
+| [`docs/tables.md`](docs/tables.md) | 테이블 · 컬럼 전체 레퍼런스 (실제 스키마에서 추출) |
+| [`docs/schema-draft.md`](docs/schema-draft.md) | 설계 의도와 확정 사항 |
+| [`docs/worklog.md`](docs/worklog.md) | 기능별 설계 근거 + **밟으면 아픈 곳 26개** |
+
+---
+
+## 현재 상태
+
+### 되는 것
+
+상품 · 장바구니 · 주문 · 재고 예약 · 무통장 결제 · 배송 · 반품/교환 · 쿠폰 · 후기 · Q&A ·
+1:1 문의 · 배송지록 · 간편로그인 · 관리자 전 기능이 동작한다. 동시성(오버셀 방지)과
+반품 금액 계산은 실제로 검증했다.
+
+### 안 되는 것 / 미완성
+
+- **PG 연동이 없다.** 카드 · 가상계좌 결제가 구현되어 있지 않고, 환불도 금액을 계산해
+  기록만 한다(실제 송금은 사람이 한다).
+- **자동화 테스트가 없다.** 지금까지의 검증은 스크립트와 브라우저로 했고 저장소에 남지 않았다.
+  가장 우선순위 높은 남은 작업이다.
+- **화면의 날짜가 UTC 로 표시된다.** 통계의 날짜 경계만 KST 로 맞춰져 있다.
+- **고객에게 가는 알림이 없다.** 문의 답변 · 반품 상태 변경을 고객이 직접 확인해야 한다.
+- 이메일 인증이 동작하지만 아직 어떤 라우트에도 필수로 걸려 있지 않다.
+- 우편번호 검색, 포토 후기, 관리자 재고 입고 화면이 없다.
+
+전체 목록은 [`CLAUDE.md`](CLAUDE.md) 의 체크리스트에 있다.
+
+---
+
+## 참고
+
+- 이 저장소의 데모 계정 비밀번호는 **로컬 개발용 더미**다. 실제로 운영한다면 반드시 교체해야 한다.
+- `.env` 는 커밋되지 않는다. 새 설정 키를 추가하면 `.env.example` 에도 함께 추가한다.
