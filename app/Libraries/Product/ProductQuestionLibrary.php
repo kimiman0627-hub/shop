@@ -8,6 +8,7 @@ use App\Enums\Product\QuestionStatus;
 use App\Exceptions\DomainRuleException;
 use App\Models\Product;
 use App\Models\ProductQuestion;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
@@ -141,8 +142,8 @@ class ProductQuestionLibrary
                 'status_label' => $q->status->label(),
                 'answer' => $q->answer,
                 'answered_by' => $q->answeredBy?->name,
-                'answered_at' => $q->answered_at?->toDateTimeString(),
-                'created_at' => $q->created_at->toDateTimeString(),
+                'answered_at' => LocalTime::dateTime($q->answered_at),
+                'created_at' => LocalTime::dateTime($q->created_at),
             ]);
     }
 
@@ -179,8 +180,8 @@ class ProductQuestionLibrary
 
             'status' => $question->status->value,
             'status_label' => $question->status->label(),
-            'answered_at' => $question->answered_at?->toDateString(),
-            'created_at' => $question->created_at->toDateString(),
+            'answered_at' => LocalTime::date($question->answered_at),
+            'created_at' => LocalTime::date($question->created_at),
 
             // 답변 전이고 본인 글일 때만 삭제 버튼이 뜬다.
             'is_deletable' => $viewerId !== null

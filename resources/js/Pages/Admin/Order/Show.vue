@@ -122,29 +122,31 @@ const sectionClass = 'rounded-lg border border-neutral-800 p-4';
                 <span class="ml-1 text-xs text-neutral-600">(주문 시점 스냅샷)</span>
             </p>
 
-            <table class="mt-3 w-full text-sm">
-                <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                    <tr>
-                        <th class="py-1.5 font-medium">상품</th>
-                        <th class="py-1.5 font-medium">SKU</th>
-                        <th class="py-1.5 text-right font-medium">단가</th>
-                        <th class="py-1.5 text-center font-medium">수량</th>
-                        <th class="py-1.5 text-right font-medium">합계</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in order.items" :key="item.id" class="border-b border-neutral-900">
-                        <td class="py-2">
-                            {{ item.product_name }}
-                            <span v-if="item.variant_name" class="text-neutral-500">· {{ item.variant_name }}</span>
-                        </td>
-                        <td class="py-2 font-mono text-xs text-neutral-500">{{ item.sku }}</td>
-                        <td class="py-2 text-right">{{ won(item.unit_price) }}</td>
-                        <td class="py-2 text-center">{{ item.quantity }}</td>
-                        <td class="py-2 text-right">{{ won(item.subtotal) }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="min-w-[44rem] mt-3 w-full text-sm">
+                    <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                        <tr>
+                            <th class="py-1.5 font-medium">상품</th>
+                            <th class="py-1.5 font-medium">SKU</th>
+                            <th class="py-1.5 text-right font-medium">단가</th>
+                            <th class="py-1.5 text-center font-medium">수량</th>
+                            <th class="py-1.5 text-right font-medium">합계</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in order.items" :key="item.id" class="border-b border-neutral-900">
+                            <td class="py-2">
+                                {{ item.product_name }}
+                                <span v-if="item.variant_name" class="text-neutral-500">· {{ item.variant_name }}</span>
+                            </td>
+                            <td class="py-2 font-mono text-xs text-neutral-500">{{ item.sku }}</td>
+                            <td class="py-2 text-right">{{ won(item.unit_price) }}</td>
+                            <td class="py-2 text-center">{{ item.quantity }}</td>
+                            <td class="py-2 text-right">{{ won(item.subtotal) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <dl class="mt-4 ml-auto max-w-xs space-y-1.5 text-sm">
                 <div class="flex justify-between">
@@ -241,30 +243,32 @@ const sectionClass = 'rounded-lg border border-neutral-800 p-4';
                 <span class="ml-1 text-xs text-neutral-600">(이 주문으로 인한 변동만)</span>
             </p>
 
-            <table class="mt-3 w-full max-w-2xl text-sm">
-                <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                    <tr>
-                        <th class="py-1.5 font-medium">구분</th>
-                        <th class="py-1.5 font-medium">SKU</th>
-                        <th class="py-1.5 text-right font-medium">실물</th>
-                        <th class="py-1.5 text-right font-medium">예약</th>
-                        <th class="py-1.5 font-medium">시각</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(m, i) in order.stock_movements" :key="i" class="border-b border-neutral-900">
-                        <td class="py-1.5">{{ m.type_label }}</td>
-                        <td class="py-1.5 font-mono text-xs">{{ m.sku }}</td>
-                        <td class="py-1.5 text-right" :class="m.stock_delta < 0 ? 'text-red-400' : m.stock_delta > 0 ? 'text-emerald-400' : 'text-neutral-600'">
-                            {{ m.stock_delta > 0 ? '+' : '' }}{{ m.stock_delta }}
-                        </td>
-                        <td class="py-1.5 text-right" :class="m.reserved_delta < 0 ? 'text-red-400' : m.reserved_delta > 0 ? 'text-amber-400' : 'text-neutral-600'">
-                            {{ m.reserved_delta > 0 ? '+' : '' }}{{ m.reserved_delta }}
-                        </td>
-                        <td class="py-1.5 text-neutral-500">{{ m.created_at }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="min-w-[44rem] mt-3 w-full max-w-2xl text-sm">
+                    <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                        <tr>
+                            <th class="py-1.5 font-medium">구분</th>
+                            <th class="py-1.5 font-medium">SKU</th>
+                            <th class="py-1.5 text-right font-medium">실물</th>
+                            <th class="py-1.5 text-right font-medium">예약</th>
+                            <th class="py-1.5 font-medium">시각</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(m, i) in order.stock_movements" :key="i" class="border-b border-neutral-900">
+                            <td class="py-1.5">{{ m.type_label }}</td>
+                            <td class="py-1.5 font-mono text-xs">{{ m.sku }}</td>
+                            <td class="py-1.5 text-right" :class="m.stock_delta < 0 ? 'text-red-400' : m.stock_delta > 0 ? 'text-emerald-400' : 'text-neutral-600'">
+                                {{ m.stock_delta > 0 ? '+' : '' }}{{ m.stock_delta }}
+                            </td>
+                            <td class="py-1.5 text-right" :class="m.reserved_delta < 0 ? 'text-red-400' : m.reserved_delta > 0 ? 'text-amber-400' : 'text-neutral-600'">
+                                {{ m.reserved_delta > 0 ? '+' : '' }}{{ m.reserved_delta }}
+                            </td>
+                            <td class="py-1.5 text-neutral-500">{{ m.created_at }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <!-- 강제 취소 -->

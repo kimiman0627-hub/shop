@@ -212,29 +212,31 @@ const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-
         <section v-if="isEdit" class="mt-8 max-w-3xl">
             <p class="text-sm font-medium">발급 내역 <span class="text-neutral-500">(최근 100건)</span></p>
 
-            <table v-if="issued.length" class="mt-3 w-full text-sm">
-                <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                    <tr>
-                        <th class="py-2 font-medium">회원</th>
-                        <th class="py-2 font-medium">발급일</th>
-                        <th class="py-2 font-medium">만료일</th>
-                        <th class="py-2 font-medium">사용</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="row in issued" :key="row.id" class="border-b border-neutral-900">
-                        <td class="py-2">
-                            {{ row.user_name }}
-                            <span class="ml-1 text-xs text-neutral-600">{{ row.user_email }}</span>
-                        </td>
-                        <td class="py-2 text-neutral-400">{{ row.issued_at }}</td>
-                        <td class="py-2" :class="row.expired ? 'text-red-400' : 'text-neutral-400'">
-                            {{ row.expires_at }}
-                        </td>
-                        <td class="py-2 text-neutral-400">{{ row.used_at ?? '-' }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-if="issued.length" class="overflow-x-auto">
+                <table class="min-w-[44rem] mt-3 w-full text-sm">
+                    <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                        <tr>
+                            <th class="py-2 font-medium">회원</th>
+                            <th class="py-2 font-medium">발급일</th>
+                            <th class="py-2 font-medium">만료일</th>
+                            <th class="py-2 font-medium">사용</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in issued" :key="row.id" class="border-b border-neutral-900">
+                            <td class="py-2">
+                                {{ row.user_name }}
+                                <span class="ml-1 text-xs text-neutral-600">{{ row.user_email }}</span>
+                            </td>
+                            <td class="py-2 text-neutral-400">{{ row.issued_at }}</td>
+                            <td class="py-2" :class="row.expired ? 'text-red-400' : 'text-neutral-400'">
+                                {{ row.expires_at }}
+                            </td>
+                            <td class="py-2 text-neutral-400">{{ row.used_at ?? '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <p v-else class="mt-3 text-sm text-neutral-500">아직 발급된 내역이 없습니다.</p>
         </section>

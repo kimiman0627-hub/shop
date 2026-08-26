@@ -47,7 +47,7 @@ const peak = computed(() => won(max.value));
             <div
                 v-for="d in bars"
                 :key="d.date"
-                class="group flex h-full flex-1 flex-col justify-end"
+                class="group flex h-full min-w-0 flex-1 flex-col justify-end"
                 @mouseenter="hovered = d"
                 @mouseleave="hovered = null"
             >
@@ -60,7 +60,7 @@ const peak = computed(() => won(max.value));
         </div>
 
         <div class="mt-1 flex gap-1 text-[10px] text-neutral-600">
-            <span v-for="(d, i) in bars" :key="d.date" class="flex-1 text-center">
+            <span v-for="(d, i) in bars" :key="d.date" class="min-w-0 flex-1 overflow-hidden text-center">
                 <!-- 라벨이 겹치면 못 읽는다. 막대가 많으면 건너뛰며 찍는다. -->
                 {{ bars.length <= 10 || i % 2 === 0 ? d.label : '' }}
             </span>

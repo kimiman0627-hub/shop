@@ -286,38 +286,40 @@ const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-
 
                 <!-- 결제 -->
                 <div v-else-if="tab === 'payments'">
-                    <table v-if="detail.payments.length" class="w-full text-sm">
-                        <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                            <tr>
-                                <th class="py-1.5 font-medium">주문번호</th>
-                                <th class="py-1.5 font-medium">수단</th>
-                                <th class="py-1.5 text-right font-medium">금액</th>
-                                <th class="py-1.5 text-center font-medium">상태</th>
-                                <th class="py-1.5 font-medium">처리</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="p in detail.payments" :key="p.id" class="border-b border-neutral-900">
-                                <td class="py-2 font-mono text-xs">{{ p.order_no }}</td>
-                                <td class="py-2">{{ p.method_label }}</td>
-                                <td class="py-2 text-right">{{ won(p.amount) }}</td>
-                                <td class="py-2 text-center">
-                                    <span
-                                        class="rounded px-1.5 py-0.5 text-xs"
-                                        :class="p.status === 'PAID'
-                                            ? 'bg-emerald-500/15 text-emerald-300'
-                                            : p.status === 'READY'
-                                                ? 'bg-amber-500/15 text-amber-300'
-                                                : 'bg-neutral-700/40 text-neutral-400'"
-                                    >{{ p.status_label }}</span>
-                                </td>
-                                <td class="py-2 text-xs text-neutral-500">
-                                    <span v-if="p.paid_at">{{ p.paid_at }}</span>
-                                    <span v-if="p.confirmed_by"> · {{ p.confirmed_by }}</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div v-if="detail.payments.length" class="overflow-x-auto">
+                        <table class="min-w-[44rem] w-full text-sm">
+                            <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                                <tr>
+                                    <th class="py-1.5 font-medium">주문번호</th>
+                                    <th class="py-1.5 font-medium">수단</th>
+                                    <th class="py-1.5 text-right font-medium">금액</th>
+                                    <th class="py-1.5 text-center font-medium">상태</th>
+                                    <th class="py-1.5 font-medium">처리</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="p in detail.payments" :key="p.id" class="border-b border-neutral-900">
+                                    <td class="py-2 font-mono text-xs">{{ p.order_no }}</td>
+                                    <td class="py-2">{{ p.method_label }}</td>
+                                    <td class="py-2 text-right">{{ won(p.amount) }}</td>
+                                    <td class="py-2 text-center">
+                                        <span
+                                            class="rounded px-1.5 py-0.5 text-xs"
+                                            :class="p.status === 'PAID'
+                                                ? 'bg-emerald-500/15 text-emerald-300'
+                                                : p.status === 'READY'
+                                                    ? 'bg-amber-500/15 text-amber-300'
+                                                    : 'bg-neutral-700/40 text-neutral-400'"
+                                        >{{ p.status_label }}</span>
+                                    </td>
+                                    <td class="py-2 text-xs text-neutral-500">
+                                        <span v-if="p.paid_at">{{ p.paid_at }}</span>
+                                        <span v-if="p.confirmed_by"> · {{ p.confirmed_by }}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <p v-else class="text-sm text-neutral-500">결제 내역이 없습니다.</p>
                 </div>
 
@@ -378,28 +380,30 @@ const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-
 
                 <!-- 쿠폰 -->
                 <div v-else-if="tab === 'coupons'">
-                    <table v-if="detail.coupons.length" class="w-full text-sm">
-                        <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                            <tr>
-                                <th class="py-1.5 font-medium">쿠폰</th>
-                                <th class="py-1.5 font-medium">할인</th>
-                                <th class="py-1.5 font-medium">만료일</th>
-                                <th class="py-1.5 text-center font-medium">상태</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="c in detail.coupons" :key="c.id" class="border-b border-neutral-900">
-                                <td class="py-2">{{ c.name }}</td>
-                                <td class="py-2 text-neutral-400">{{ c.discount_label }}</td>
-                                <td class="py-2 text-neutral-500">{{ c.expires_at }}</td>
-                                <td class="py-2 text-center text-xs">
-                                    <span v-if="c.used" class="text-neutral-500">사용완료</span>
-                                    <span v-else-if="c.expired" class="text-red-400">만료</span>
-                                    <span v-else class="text-emerald-300">사용가능</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div v-if="detail.coupons.length" class="overflow-x-auto">
+                        <table class="min-w-[44rem] w-full text-sm">
+                            <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                                <tr>
+                                    <th class="py-1.5 font-medium">쿠폰</th>
+                                    <th class="py-1.5 font-medium">할인</th>
+                                    <th class="py-1.5 font-medium">만료일</th>
+                                    <th class="py-1.5 text-center font-medium">상태</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="c in detail.coupons" :key="c.id" class="border-b border-neutral-900">
+                                    <td class="py-2">{{ c.name }}</td>
+                                    <td class="py-2 text-neutral-400">{{ c.discount_label }}</td>
+                                    <td class="py-2 text-neutral-500">{{ c.expires_at }}</td>
+                                    <td class="py-2 text-center text-xs">
+                                        <span v-if="c.used" class="text-neutral-500">사용완료</span>
+                                        <span v-else-if="c.expired" class="text-red-400">만료</span>
+                                        <span v-else class="text-emerald-300">사용가능</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <p v-else class="text-sm text-neutral-500">보유 쿠폰이 없습니다.</p>
                 </div>
 

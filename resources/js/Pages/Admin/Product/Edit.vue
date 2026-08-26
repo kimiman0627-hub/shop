@@ -332,43 +332,45 @@ const cellClass = 'w-full rounded border border-neutral-700 bg-neutral-950 px-2 
 
                 <p v-if="form.errors.variants" class="text-xs text-red-400">{{ form.errors.variants }}</p>
 
-                <table class="w-full text-sm">
-                    <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                        <tr>
-                            <th class="py-2 font-medium">조합</th>
-                            <th class="w-40 py-2 font-medium">SKU</th>
-                            <th class="w-28 py-2 font-medium">추가금액</th>
-                            <th class="w-28 py-2 font-medium">최종가</th>
-                            <th class="w-24 py-2 font-medium">재고</th>
-                            <th class="w-20 py-2 text-center font-medium">예약</th>
-                            <th class="w-16 py-2 text-center font-medium">판매</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="labels in combinations" :key="signatureOf(labels)" class="border-b border-neutral-900">
-                            <td class="py-2 pr-3">
-                                <span v-if="labels.length">{{ labels.join(' / ') }}</span>
-                                <span v-else class="text-neutral-500">단일 상품</span>
-                            </td>
-                            <td class="py-2 pr-2">
-                                <input v-model="rowFor(labels).sku" type="text" placeholder="자동 생성" :class="cellClass">
-                            </td>
-                            <td class="py-2 pr-2">
-                                <input v-model.number="rowFor(labels).additional_price" type="number" :class="cellClass">
-                            </td>
-                            <td class="py-2 pr-2 text-neutral-400">{{ won(finalPrice(labels)) }}</td>
-                            <td class="py-2 pr-2">
-                                <input v-model.number="rowFor(labels).stock_quantity" type="number" min="0" :class="cellClass">
-                            </td>
-                            <td class="py-2 text-center" :class="rowFor(labels).reserved_quantity > 0 ? 'text-amber-300' : 'text-neutral-600'">
-                                {{ rowFor(labels).reserved_quantity }}
-                            </td>
-                            <td class="py-2 text-center">
-                                <input v-model="rowFor(labels).is_active" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="min-w-[44rem] w-full text-sm">
+                        <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                            <tr>
+                                <th class="py-2 font-medium">조합</th>
+                                <th class="w-40 py-2 font-medium">SKU</th>
+                                <th class="w-28 py-2 font-medium">추가금액</th>
+                                <th class="w-28 py-2 font-medium">최종가</th>
+                                <th class="w-24 py-2 font-medium">재고</th>
+                                <th class="w-20 py-2 text-center font-medium">예약</th>
+                                <th class="w-16 py-2 text-center font-medium">판매</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="labels in combinations" :key="signatureOf(labels)" class="border-b border-neutral-900">
+                                <td class="py-2 pr-3">
+                                    <span v-if="labels.length">{{ labels.join(' / ') }}</span>
+                                    <span v-else class="text-neutral-500">단일 상품</span>
+                                </td>
+                                <td class="py-2 pr-2">
+                                    <input v-model="rowFor(labels).sku" type="text" placeholder="자동 생성" :class="cellClass">
+                                </td>
+                                <td class="py-2 pr-2">
+                                    <input v-model.number="rowFor(labels).additional_price" type="number" :class="cellClass">
+                                </td>
+                                <td class="py-2 pr-2 text-neutral-400">{{ won(finalPrice(labels)) }}</td>
+                                <td class="py-2 pr-2">
+                                    <input v-model.number="rowFor(labels).stock_quantity" type="number" min="0" :class="cellClass">
+                                </td>
+                                <td class="py-2 text-center" :class="rowFor(labels).reserved_quantity > 0 ? 'text-amber-300' : 'text-neutral-600'">
+                                    {{ rowFor(labels).reserved_quantity }}
+                                </td>
+                                <td class="py-2 text-center">
+                                    <input v-model="rowFor(labels).is_active" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
 
             <div class="flex gap-2">

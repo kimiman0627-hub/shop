@@ -15,6 +15,7 @@ use App\Models\Payment;
 use App\Models\ProductVariant;
 use App\Models\StockMovement;
 use App\Support\CartOwner;
+use App\Support\LocalTime;
 use App\Support\PaymentDueCalculator;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -91,8 +92,7 @@ class OrderLibrary
      */
     private function create(array $summary, array $form, int $userId, ?CartOwner $clearCartOf): Order
     {
-        // 비회원은 쿠폰을 쓸 수 없다 (§8.3).
-        $userCouponId = $userId === null ? null : ($form['user_coupon_id'] ?? null);
+        $userCouponId = $form['user_coupon_id'] ?? null;
 
         $method = PaymentMethod::from($form['payment_method']);
 
@@ -345,8 +345,8 @@ class OrderLibrary
             'address1' => $order->address1,
             'address2' => $order->address2,
             'delivery_memo' => $order->delivery_memo,
-            'ordered_at' => $order->ordered_at->toDateTimeString(),
-            'paid_at' => $order->paid_at?->toDateTimeString(),
+            'ordered_at' => LocalTime::dateTime($order->ordered_at),
+            'paid_at' => LocalTime::dateTime($order->paid_at),
             'is_guest' => $order->isGuest(),
 
             // 출고 전에는 null 이다. 송장이 없는데 '배송정보' 를 보여주면 혼란만 준다.
@@ -399,9 +399,9 @@ class OrderLibrary
                 'orderer_phone' => $o->orderer_phone,
                 'item_summary' => $this->itemSummary($o),
                 'total_amount' => $o->total_amount,
-                'ordered_at' => $o->ordered_at->toDateTimeString(),
-                'paid_at' => $o->paid_at?->toDateTimeString(),
-                'payment_due_at' => $o->payment_due_at?->toDateTimeString(),
+                'ordered_at' => LocalTime::dateTime($o->ordered_at),
+                'paid_at' => LocalTime::dateTime($o->paid_at),
+                'payment_due_at' => LocalTime::dateTime($o->payment_due_at),
                 // 미결제인데 기한이 지났으면 스케줄러가 곧 취소한다. 눈에 띄게 표시한다.
                 'overdue' => $o->status === OrderStatus::PENDING
                     && $o->payment_due_at?->isPast() === true,
@@ -430,9 +430,9 @@ class OrderLibrary
             ...$this->present($order),
 
             'is_cancelable_by_admin' => $order->status->isCancelableByAdmin(),
-            'canceled_at' => $order->canceled_at?->toDateTimeString(),
-            'payment_due_at' => $order->payment_due_at?->toDateTimeString(),
-            'stock_released_at' => $order->stock_released_at?->toDateTimeString(),
+            'canceled_at' => LocalTime::dateTime($order->canceled_at),
+            'payment_due_at' => LocalTime::dateTime($order->payment_due_at),
+            'stock_released_at' => LocalTime::dateTime($order->stock_released_at),
 
             'customer' => $order->user === null ? null : [
                 'id' => $order->user->id,
@@ -458,8 +458,8 @@ class OrderLibrary
                     'amount' => $p->amount,
                     'account_label' => $p->bank_name !== null ? $p->accountLabel() : null,
                     'depositor_name' => $p->depositor_name,
-                    'requested_at' => $p->requested_at->toDateTimeString(),
-                    'paid_at' => $p->paid_at?->toDateTimeString(),
+                    'requested_at' => LocalTime::dateTime($p->requested_at),
+                    'paid_at' => LocalTime::dateTime($p->paid_at),
                     'confirmed_by' => $p->confirmedBy?->name,
                     'memo' => $p->memo,
                 ])->all(),
@@ -476,7 +476,7 @@ class OrderLibrary
                     'sku' => $m->variant?->sku,
                     'stock_delta' => $m->stock_delta,
                     'reserved_delta' => $m->reserved_delta,
-                    'created_at' => $m->created_at?->toDateTimeString(),
+                    'created_at' => LocalTime::dateTime($m->created_at),
                 ])->all(),
         ];
     }
@@ -558,7 +558,9 @@ class OrderLibrary
      */
     private function nextOrderNo(): string
     {
-        $prefix = config('shop.order_no_prefix').now()->format('Ymd');
+        // 주문번호의 날짜도 영업일 기준이다. UTC 로 찍으면 한국 시간 오전 9시에
+        // 날짜가 바뀌어, 25일 저녁 주문이 26일자 번호를 달고 나온다.
+        $prefix = config('shop.order_no_prefix').now(config('shop.timezone'))->format('Ymd');
 
         do {
             $candidate = $prefix.Str::upper(Str::random(6));

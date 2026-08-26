@@ -8,6 +8,7 @@ use App\Enums\Support\InquiryStatus;
 use App\Exceptions\DomainRuleException;
 use App\Models\Inquiry;
 use App\Models\Order;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -87,8 +88,8 @@ class InquiryLibrary
                 'status_label' => $i->status->label(),
                 'order_no' => $i->order?->order_no,
                 'answer' => $i->answer,
-                'answered_at' => $i->answered_at?->toDateTimeString(),
-                'created_at' => $i->created_at?->toDateTimeString(),
+                'answered_at' => LocalTime::dateTime($i->answered_at),
+                'created_at' => LocalTime::dateTime($i->created_at),
             ]);
     }
 
@@ -106,7 +107,7 @@ class InquiryLibrary
             ->get()
             ->map(fn (Order $o) => [
                 'id' => $o->id,
-                'label' => "{$o->order_no} ({$o->ordered_at->toDateString()}, {$o->status->label()})",
+                'label' => $o->order_no.' ('.LocalTime::date($o->ordered_at).', '.$o->status->label().')',
             ]);
     }
 
@@ -146,9 +147,9 @@ class InquiryLibrary
                 'status_label' => $i->status->label(),
                 'order_no' => $i->order?->order_no,
                 'answer' => $i->answer,
-                'answered_at' => $i->answered_at?->toDateTimeString(),
+                'answered_at' => LocalTime::dateTime($i->answered_at),
                 'answered_by' => $i->answeredBy?->name,
-                'created_at' => $i->created_at?->toDateTimeString(),
+                'created_at' => LocalTime::dateTime($i->created_at),
             ]);
     }
 }

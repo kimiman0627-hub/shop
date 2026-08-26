@@ -69,118 +69,120 @@ const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-
             계좌가 없으면 고객이 무통장입금으로 주문할 수 없습니다.
         </p>
 
-        <table class="mt-6 w-full max-w-4xl text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">은행</th>
-                    <th class="py-2 font-medium">계좌번호</th>
-                    <th class="py-2 font-medium">예금주</th>
-                    <th class="py-2 text-center font-medium">기본</th>
-                    <th class="py-2 text-center font-medium">사용</th>
-                    <th class="w-28 py-2" />
-                </tr>
-            </thead>
-            <tbody>
-                <template v-for="a in accounts" :key="a.id">
-                    <tr class="border-b border-neutral-900">
-                        <td class="py-3">{{ a.bank_name }}</td>
-                        <td class="py-3 font-mono text-xs">{{ a.account_number }}</td>
-                        <td class="py-3">{{ a.holder_name }}</td>
-                        <td class="py-3 text-center">
-                            <span
-                                v-if="a.is_default"
-                                class="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300"
-                            >기본</span>
-                        </td>
-                        <td class="py-3 text-center">
-                            <span
-                                class="rounded px-1.5 py-0.5 text-xs"
-                                :class="a.is_active
-                                    ? 'bg-emerald-500/15 text-emerald-300'
-                                    : 'bg-neutral-700/40 text-neutral-400'"
-                            >
-                                {{ a.is_active ? '사용' : '중지' }}
-                            </span>
-                        </td>
-                        <td class="py-3 text-right">
-                            <button type="button" class="text-neutral-400 hover:text-neutral-100" @click="startEdit(a)">
-                                수정
-                            </button>
-                            <button
-                                v-if="!a.is_default"
-                                type="button"
-                                class="ml-3 text-red-400 hover:text-red-300"
-                                @click="remove(a)"
-                            >
-                                삭제
-                            </button>
-                        </td>
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full max-w-4xl text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">은행</th>
+                        <th class="py-2 font-medium">계좌번호</th>
+                        <th class="py-2 font-medium">예금주</th>
+                        <th class="py-2 text-center font-medium">기본</th>
+                        <th class="py-2 text-center font-medium">사용</th>
+                        <th class="w-28 py-2" />
                     </tr>
+                </thead>
+                <tbody>
+                    <template v-for="a in accounts" :key="a.id">
+                        <tr class="border-b border-neutral-900">
+                            <td class="py-3">{{ a.bank_name }}</td>
+                            <td class="py-3 font-mono text-xs">{{ a.account_number }}</td>
+                            <td class="py-3">{{ a.holder_name }}</td>
+                            <td class="py-3 text-center">
+                                <span
+                                    v-if="a.is_default"
+                                    class="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300"
+                                >기본</span>
+                            </td>
+                            <td class="py-3 text-center">
+                                <span
+                                    class="rounded px-1.5 py-0.5 text-xs"
+                                    :class="a.is_active
+                                        ? 'bg-emerald-500/15 text-emerald-300'
+                                        : 'bg-neutral-700/40 text-neutral-400'"
+                                >
+                                    {{ a.is_active ? '사용' : '중지' }}
+                                </span>
+                            </td>
+                            <td class="py-3 text-right">
+                                <button type="button" class="text-neutral-400 hover:text-neutral-100" @click="startEdit(a)">
+                                    수정
+                                </button>
+                                <button
+                                    v-if="!a.is_default"
+                                    type="button"
+                                    class="ml-3 text-red-400 hover:text-red-300"
+                                    @click="remove(a)"
+                                >
+                                    삭제
+                                </button>
+                            </td>
+                        </tr>
 
-                    <tr v-if="editingId === a.id" class="border-b border-neutral-900 bg-neutral-900">
-                        <td colspan="6" class="p-4">
-                            <form class="space-y-4" @submit.prevent="submitEdit">
-                                <div class="grid gap-4 sm:grid-cols-3">
-                                    <div>
-                                        <label class="block text-sm text-neutral-400">은행</label>
-                                        <input v-model="editForm.bank_name" type="text" :class="inputClass">
-                                        <p v-if="editForm.errors.bank_name" class="mt-1 text-xs text-red-400">
-                                            {{ editForm.errors.bank_name }}
-                                        </p>
+                        <tr v-if="editingId === a.id" class="border-b border-neutral-900 bg-neutral-900">
+                            <td colspan="6" class="p-4">
+                                <form class="space-y-4" @submit.prevent="submitEdit">
+                                    <div class="grid gap-4 sm:grid-cols-3">
+                                        <div>
+                                            <label class="block text-sm text-neutral-400">은행</label>
+                                            <input v-model="editForm.bank_name" type="text" :class="inputClass">
+                                            <p v-if="editForm.errors.bank_name" class="mt-1 text-xs text-red-400">
+                                                {{ editForm.errors.bank_name }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-neutral-400">계좌번호</label>
+                                            <input v-model="editForm.account_number" type="text" :class="inputClass">
+                                            <p v-if="editForm.errors.account_number" class="mt-1 text-xs text-red-400">
+                                                {{ editForm.errors.account_number }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-neutral-400">예금주</label>
+                                            <input v-model="editForm.holder_name" type="text" :class="inputClass">
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-sm text-neutral-400">계좌번호</label>
-                                        <input v-model="editForm.account_number" type="text" :class="inputClass">
-                                        <p v-if="editForm.errors.account_number" class="mt-1 text-xs text-red-400">
-                                            {{ editForm.errors.account_number }}
-                                        </p>
+
+                                    <div class="flex items-center gap-6">
+                                        <label class="flex items-center gap-2 text-sm text-neutral-400">
+                                            <input v-model="editForm.is_default" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
+                                            기본 계좌
+                                        </label>
+                                        <label class="flex items-center gap-2 text-sm text-neutral-400">
+                                            <input v-model="editForm.is_active" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
+                                            사용
+                                        </label>
                                     </div>
-                                    <div>
-                                        <label class="block text-sm text-neutral-400">예금주</label>
-                                        <input v-model="editForm.holder_name" type="text" :class="inputClass">
+
+                                    <p v-if="editForm.errors.is_default" class="text-xs text-red-400">
+                                        {{ editForm.errors.is_default }}
+                                    </p>
+                                    <p v-if="editForm.errors.is_active" class="text-xs text-red-400">
+                                        {{ editForm.errors.is_active }}
+                                    </p>
+
+                                    <div class="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            :disabled="editForm.processing"
+                                            class="rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 disabled:opacity-50"
+                                        >
+                                            저장
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="rounded-lg border border-neutral-700 px-3 py-2 text-sm text-neutral-300"
+                                            @click="editingId = null"
+                                        >
+                                            취소
+                                        </button>
                                     </div>
-                                </div>
-
-                                <div class="flex items-center gap-6">
-                                    <label class="flex items-center gap-2 text-sm text-neutral-400">
-                                        <input v-model="editForm.is_default" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
-                                        기본 계좌
-                                    </label>
-                                    <label class="flex items-center gap-2 text-sm text-neutral-400">
-                                        <input v-model="editForm.is_active" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
-                                        사용
-                                    </label>
-                                </div>
-
-                                <p v-if="editForm.errors.is_default" class="text-xs text-red-400">
-                                    {{ editForm.errors.is_default }}
-                                </p>
-                                <p v-if="editForm.errors.is_active" class="text-xs text-red-400">
-                                    {{ editForm.errors.is_active }}
-                                </p>
-
-                                <div class="flex gap-2">
-                                    <button
-                                        type="submit"
-                                        :disabled="editForm.processing"
-                                        class="rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 disabled:opacity-50"
-                                    >
-                                        저장
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="rounded-lg border border-neutral-700 px-3 py-2 text-sm text-neutral-300"
-                                        @click="editingId = null"
-                                    >
-                                        취소
-                                    </button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                </template>
-            </tbody>
-        </table>
+                                </form>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
 
         <form class="mt-8 max-w-4xl space-y-4 rounded-lg border border-neutral-800 p-4" @submit.prevent="submitCreate">
             <p class="text-sm font-medium">계좌 추가</p>

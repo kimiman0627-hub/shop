@@ -106,130 +106,132 @@ const filterClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py
             </button>
         </form>
 
-        <table class="mt-6 w-full text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">주문</th>
-                    <th class="py-2 font-medium">배송지</th>
-                    <th class="py-2 text-center font-medium">상태</th>
-                    <th class="w-80 py-2 font-medium">배송 처리</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="row in orders.data" :key="row.id" class="border-b border-neutral-900 align-top">
-                    <td class="py-3 pr-3">
-                        <p class="font-mono text-xs">{{ row.order_no }}</p>
-                        <p class="mt-0.5">{{ row.item_summary }}</p>
-                        <p class="mt-0.5 text-xs text-neutral-600">결제 {{ row.paid_at }}</p>
-                    </td>
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">주문</th>
+                        <th class="py-2 font-medium">배송지</th>
+                        <th class="py-2 text-center font-medium">상태</th>
+                        <th class="w-80 py-2 font-medium">배송 처리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="row in orders.data" :key="row.id" class="border-b border-neutral-900 align-top">
+                        <td class="py-3 pr-3">
+                            <p class="font-mono text-xs">{{ row.order_no }}</p>
+                            <p class="mt-0.5">{{ row.item_summary }}</p>
+                            <p class="mt-0.5 text-xs text-neutral-600">결제 {{ row.paid_at }}</p>
+                        </td>
 
-                    <td class="py-3 pr-3">
-                        <p>{{ row.receiver_name }} · {{ row.receiver_phone }}</p>
-                        <p class="mt-0.5 text-xs text-neutral-500">{{ row.address }}</p>
-                        <p v-if="row.delivery_memo" class="mt-1 text-xs text-amber-300">
-                            메모: {{ row.delivery_memo }}
-                        </p>
-                    </td>
-
-                    <td class="py-3 text-center">
-                        <span
-                            class="rounded px-1.5 py-0.5 text-xs"
-                            :class="{
-                                'bg-emerald-500/15 text-emerald-300': row.status === 'DELIVERED',
-                                'bg-sky-500/15 text-sky-300': row.status === 'SHIPPING',
-                                'bg-amber-500/15 text-amber-300': row.status === 'PREPARING',
-                                'bg-neutral-700/40 text-neutral-300': row.status === 'PAID',
-                            }"
-                        >
-                            {{ row.status_label }}
-                        </span>
-                        <p v-if="row.shipped_by" class="mt-1 text-xs text-neutral-600">{{ row.shipped_by }}</p>
-                    </td>
-
-                    <td class="py-3">
-                        <!-- 출고 전: 송장 입력 -->
-                        <template v-if="row.status === 'PAID' || row.status === 'PREPARING'">
-                            <div class="flex gap-1">
-                                <select v-model="rowForm(row).carrier" :class="inputClass">
-                                    <option v-for="c in carrierOptions" :key="c.value" :value="c.value">
-                                        {{ c.label }}
-                                    </option>
-                                </select>
-                                <input
-                                    v-model="rowForm(row).tracking_no"
-                                    type="text"
-                                    placeholder="송장번호"
-                                    :class="[inputClass, 'flex-1']"
-                                >
-                            </div>
-
-                            <div class="mt-2 flex gap-2">
-                                <button
-                                    type="button"
-                                    class="rounded bg-sky-600 px-3 py-1 text-xs font-medium text-white hover:bg-sky-500"
-                                    @click="ship(row)"
-                                >
-                                    출고
-                                </button>
-                                <button
-                                    v-if="row.status === 'PAID'"
-                                    type="button"
-                                    class="rounded border border-neutral-700 px-3 py-1 text-xs text-neutral-300"
-                                    @click="prepare(row)"
-                                >
-                                    준비중으로
-                                </button>
-                            </div>
-                        </template>
-
-                        <!-- 배송중: 조회 링크 + 완료/되돌리기 -->
-                        <template v-else-if="row.status === 'SHIPPING'">
-                            <p class="text-xs">
-                                {{ row.carrier_name }}
-                                <a
-                                    v-if="row.tracking_url"
-                                    :href="row.tracking_url"
-                                    target="_blank"
-                                    rel="noopener"
-                                    class="ml-1 font-mono text-sky-300 hover:underline"
-                                >{{ row.tracking_no }}</a>
-                                <span v-else class="ml-1 font-mono text-neutral-400">
-                                    {{ row.tracking_no ?? '송장 없음' }}
-                                </span>
+                        <td class="py-3 pr-3">
+                            <p>{{ row.receiver_name }} · {{ row.receiver_phone }}</p>
+                            <p class="mt-0.5 text-xs text-neutral-500">{{ row.address }}</p>
+                            <p v-if="row.delivery_memo" class="mt-1 text-xs text-amber-300">
+                                메모: {{ row.delivery_memo }}
                             </p>
-                            <p class="mt-0.5 text-xs text-neutral-600">출고 {{ row.shipped_at }}</p>
+                        </td>
 
-                            <div class="mt-2 flex gap-2">
-                                <button
-                                    type="button"
-                                    class="rounded bg-emerald-600 px-3 py-1 text-xs font-medium text-white hover:bg-emerald-500"
-                                    @click="deliver(row)"
-                                >
-                                    배송완료
-                                </button>
-                                <button
-                                    type="button"
-                                    class="rounded border border-red-500/40 px-3 py-1 text-xs text-red-400 hover:bg-red-500/10"
-                                    @click="revert(row)"
-                                >
-                                    출고취소
-                                </button>
-                            </div>
-                        </template>
+                        <td class="py-3 text-center">
+                            <span
+                                class="rounded px-1.5 py-0.5 text-xs"
+                                :class="{
+                                    'bg-emerald-500/15 text-emerald-300': row.status === 'DELIVERED',
+                                    'bg-sky-500/15 text-sky-300': row.status === 'SHIPPING',
+                                    'bg-amber-500/15 text-amber-300': row.status === 'PREPARING',
+                                    'bg-neutral-700/40 text-neutral-300': row.status === 'PAID',
+                                }"
+                            >
+                                {{ row.status_label }}
+                            </span>
+                            <p v-if="row.shipped_by" class="mt-1 text-xs text-neutral-600">{{ row.shipped_by }}</p>
+                        </td>
 
-                        <!-- 배송완료 -->
-                        <template v-else>
-                            <p class="text-xs text-neutral-400">
-                                {{ row.carrier_name }} <span class="font-mono">{{ row.tracking_no }}</span>
-                            </p>
-                            <p class="mt-0.5 text-xs text-neutral-600">완료 {{ row.delivered_at }}</p>
-                        </template>
+                        <td class="py-3">
+                            <!-- 출고 전: 송장 입력 -->
+                            <template v-if="row.status === 'PAID' || row.status === 'PREPARING'">
+                                <div class="flex gap-1">
+                                    <select v-model="rowForm(row).carrier" :class="inputClass">
+                                        <option v-for="c in carrierOptions" :key="c.value" :value="c.value">
+                                            {{ c.label }}
+                                        </option>
+                                    </select>
+                                    <input
+                                        v-model="rowForm(row).tracking_no"
+                                        type="text"
+                                        placeholder="송장번호"
+                                        :class="[inputClass, 'flex-1']"
+                                    >
+                                </div>
 
-                        <p v-if="row.memo" class="mt-2 text-xs text-neutral-600">{{ row.memo }}</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                                <div class="mt-2 flex gap-2">
+                                    <button
+                                        type="button"
+                                        class="rounded bg-sky-600 px-3 py-1 text-xs font-medium text-white hover:bg-sky-500"
+                                        @click="ship(row)"
+                                    >
+                                        출고
+                                    </button>
+                                    <button
+                                        v-if="row.status === 'PAID'"
+                                        type="button"
+                                        class="rounded border border-neutral-700 px-3 py-1 text-xs text-neutral-300"
+                                        @click="prepare(row)"
+                                    >
+                                        준비중으로
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- 배송중: 조회 링크 + 완료/되돌리기 -->
+                            <template v-else-if="row.status === 'SHIPPING'">
+                                <p class="text-xs">
+                                    {{ row.carrier_name }}
+                                    <a
+                                        v-if="row.tracking_url"
+                                        :href="row.tracking_url"
+                                        target="_blank"
+                                        rel="noopener"
+                                        class="ml-1 font-mono text-sky-300 hover:underline"
+                                    >{{ row.tracking_no }}</a>
+                                    <span v-else class="ml-1 font-mono text-neutral-400">
+                                        {{ row.tracking_no ?? '송장 없음' }}
+                                    </span>
+                                </p>
+                                <p class="mt-0.5 text-xs text-neutral-600">출고 {{ row.shipped_at }}</p>
+
+                                <div class="mt-2 flex gap-2">
+                                    <button
+                                        type="button"
+                                        class="rounded bg-emerald-600 px-3 py-1 text-xs font-medium text-white hover:bg-emerald-500"
+                                        @click="deliver(row)"
+                                    >
+                                        배송완료
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="rounded border border-red-500/40 px-3 py-1 text-xs text-red-400 hover:bg-red-500/10"
+                                        @click="revert(row)"
+                                    >
+                                        출고취소
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- 배송완료 -->
+                            <template v-else>
+                                <p class="text-xs text-neutral-400">
+                                    {{ row.carrier_name }} <span class="font-mono">{{ row.tracking_no }}</span>
+                                </p>
+                                <p class="mt-0.5 text-xs text-neutral-600">완료 {{ row.delivered_at }}</p>
+                            </template>
+
+                            <p v-if="row.memo" class="mt-2 text-xs text-neutral-600">{{ row.memo }}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <p v-if="orders.data.length === 0" class="mt-6 text-sm text-neutral-500">
             해당하는 주문이 없습니다.

@@ -10,6 +10,7 @@ use App\Exceptions\DomainRuleException;
 use App\Http\Controllers\Controller;
 use App\Libraries\Order\ReturnLibrary;
 use App\Models\Order;
+use App\Support\LocalTime;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -47,7 +48,7 @@ class ReturnController extends Controller
                 'id' => $target->id,
                 'order_no' => $target->order_no,
                 'status_label' => $target->status->label(),
-                'delivered_at' => $target->shipment?->delivered_at?->toDateTimeString(),
+                'delivered_at' => LocalTime::dateTime($target->shipment?->delivered_at),
             ],
             'items' => $this->returns->requestableItems($target->id),
             'typeOptions' => ReturnType::options(),

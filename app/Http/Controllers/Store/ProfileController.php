@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
+use App\Support\LocalTime;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,8 +32,8 @@ class ProfileController extends Controller
                 'phone' => $user->phone,
                 'marketing_email_agreed' => $user->hasAgreedToEmailMarketing(),
                 'marketing_sms_agreed' => $user->hasAgreedToSmsMarketing(),
-                'joined_at' => $user->created_at?->toDateString(),
-                'last_login_at' => $user->last_login_at?->toDateTimeString(),
+                'joined_at' => LocalTime::date($user->created_at),
+                'last_login_at' => LocalTime::dateTime($user->last_login_at),
             ],
         ]);
     }

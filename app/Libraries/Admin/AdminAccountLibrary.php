@@ -8,6 +8,7 @@ use App\Enums\Admin\AdminStatus;
 use App\Exceptions\AdminPolicyException;
 use App\Models\Admin;
 use App\Models\AdminRole;
+use App\Support\LocalTime;
 use Illuminate\Support\Collection;
 
 /**
@@ -37,7 +38,7 @@ class AdminAccountLibrary
                 'status' => $admin->status->value,
                 'status_label' => $admin->status->label(),
                 'is_super_admin' => $admin->isSuperAdmin(),
-                'last_login_at' => $admin->last_login_at?->toDateTimeString(),
+                'last_login_at' => LocalTime::dateTime($admin->last_login_at),
             ]);
     }
 

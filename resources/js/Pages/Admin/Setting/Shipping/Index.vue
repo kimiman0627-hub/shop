@@ -72,124 +72,126 @@ const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-
             {{ errors.general }}
         </p>
 
-        <table class="mt-6 w-full max-w-4xl text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">정책명</th>
-                    <th class="py-2 font-medium">기본 배송비</th>
-                    <th class="py-2 font-medium">무료배송 기준</th>
-                    <th class="py-2 text-center font-medium">기본</th>
-                    <th class="py-2 text-center font-medium">사용</th>
-                    <th class="w-28 py-2" />
-                </tr>
-            </thead>
-            <tbody>
-                <template v-for="policy in policies" :key="policy.id">
-                    <tr class="border-b border-neutral-900">
-                        <td class="py-3">{{ policy.name }}</td>
-                        <td class="py-3">{{ won(policy.base_fee) }}</td>
-                        <td class="py-3 text-neutral-400">
-                            <span v-if="policy.free_threshold">{{ won(policy.free_threshold) }} 이상 무료</span>
-                            <span v-else class="text-neutral-600">조건부 무료 없음</span>
-                        </td>
-                        <td class="py-3 text-center">
-                            <span
-                                v-if="policy.is_default"
-                                class="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300"
-                            >기본</span>
-                        </td>
-                        <td class="py-3 text-center">
-                            <span
-                                class="rounded px-1.5 py-0.5 text-xs"
-                                :class="policy.is_active
-                                    ? 'bg-emerald-500/15 text-emerald-300'
-                                    : 'bg-neutral-700/40 text-neutral-400'"
-                            >
-                                {{ policy.is_active ? '사용' : '중지' }}
-                            </span>
-                        </td>
-                        <td class="py-3 text-right">
-                            <button type="button" class="text-neutral-400 hover:text-neutral-100" @click="startEdit(policy)">
-                                수정
-                            </button>
-                            <button
-                                v-if="!policy.is_default"
-                                type="button"
-                                class="ml-3 text-red-400 hover:text-red-300"
-                                @click="remove(policy)"
-                            >
-                                삭제
-                            </button>
-                        </td>
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full max-w-4xl text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">정책명</th>
+                        <th class="py-2 font-medium">기본 배송비</th>
+                        <th class="py-2 font-medium">무료배송 기준</th>
+                        <th class="py-2 text-center font-medium">기본</th>
+                        <th class="py-2 text-center font-medium">사용</th>
+                        <th class="w-28 py-2" />
                     </tr>
+                </thead>
+                <tbody>
+                    <template v-for="policy in policies" :key="policy.id">
+                        <tr class="border-b border-neutral-900">
+                            <td class="py-3">{{ policy.name }}</td>
+                            <td class="py-3">{{ won(policy.base_fee) }}</td>
+                            <td class="py-3 text-neutral-400">
+                                <span v-if="policy.free_threshold">{{ won(policy.free_threshold) }} 이상 무료</span>
+                                <span v-else class="text-neutral-600">조건부 무료 없음</span>
+                            </td>
+                            <td class="py-3 text-center">
+                                <span
+                                    v-if="policy.is_default"
+                                    class="rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300"
+                                >기본</span>
+                            </td>
+                            <td class="py-3 text-center">
+                                <span
+                                    class="rounded px-1.5 py-0.5 text-xs"
+                                    :class="policy.is_active
+                                        ? 'bg-emerald-500/15 text-emerald-300'
+                                        : 'bg-neutral-700/40 text-neutral-400'"
+                                >
+                                    {{ policy.is_active ? '사용' : '중지' }}
+                                </span>
+                            </td>
+                            <td class="py-3 text-right">
+                                <button type="button" class="text-neutral-400 hover:text-neutral-100" @click="startEdit(policy)">
+                                    수정
+                                </button>
+                                <button
+                                    v-if="!policy.is_default"
+                                    type="button"
+                                    class="ml-3 text-red-400 hover:text-red-300"
+                                    @click="remove(policy)"
+                                >
+                                    삭제
+                                </button>
+                            </td>
+                        </tr>
 
-                    <tr v-if="editingId === policy.id" class="border-b border-neutral-900 bg-neutral-900">
-                        <td colspan="6" class="p-4">
-                            <form class="space-y-4" @submit.prevent="submitEdit">
-                                <div class="grid gap-4 sm:grid-cols-3">
-                                    <div>
-                                        <label class="block text-sm text-neutral-400">정책명</label>
-                                        <input v-model="editForm.name" type="text" :class="inputClass">
-                                        <p v-if="editForm.errors.name" class="mt-1 text-xs text-red-400">
-                                            {{ editForm.errors.name }}
-                                        </p>
+                        <tr v-if="editingId === policy.id" class="border-b border-neutral-900 bg-neutral-900">
+                            <td colspan="6" class="p-4">
+                                <form class="space-y-4" @submit.prevent="submitEdit">
+                                    <div class="grid gap-4 sm:grid-cols-3">
+                                        <div>
+                                            <label class="block text-sm text-neutral-400">정책명</label>
+                                            <input v-model="editForm.name" type="text" :class="inputClass">
+                                            <p v-if="editForm.errors.name" class="mt-1 text-xs text-red-400">
+                                                {{ editForm.errors.name }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-neutral-400">기본 배송비 (원)</label>
+                                            <input v-model.number="editForm.base_fee" type="number" min="0" :class="inputClass">
+                                            <p v-if="editForm.errors.base_fee" class="mt-1 text-xs text-red-400">
+                                                {{ editForm.errors.base_fee }}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm text-neutral-400">무료배송 기준 (원, 비우면 없음)</label>
+                                            <input v-model.number="editForm.free_threshold" type="number" min="1" :class="inputClass">
+                                            <p v-if="editForm.errors.free_threshold" class="mt-1 text-xs text-red-400">
+                                                {{ editForm.errors.free_threshold }}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-sm text-neutral-400">기본 배송비 (원)</label>
-                                        <input v-model.number="editForm.base_fee" type="number" min="0" :class="inputClass">
-                                        <p v-if="editForm.errors.base_fee" class="mt-1 text-xs text-red-400">
-                                            {{ editForm.errors.base_fee }}
-                                        </p>
+
+                                    <div class="flex items-center gap-6">
+                                        <label class="flex items-center gap-2 text-sm text-neutral-400">
+                                            <input v-model="editForm.is_default" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
+                                            기본 정책
+                                        </label>
+                                        <label class="flex items-center gap-2 text-sm text-neutral-400">
+                                            <input v-model="editForm.is_active" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
+                                            사용
+                                        </label>
                                     </div>
-                                    <div>
-                                        <label class="block text-sm text-neutral-400">무료배송 기준 (원, 비우면 없음)</label>
-                                        <input v-model.number="editForm.free_threshold" type="number" min="1" :class="inputClass">
-                                        <p v-if="editForm.errors.free_threshold" class="mt-1 text-xs text-red-400">
-                                            {{ editForm.errors.free_threshold }}
-                                        </p>
+
+                                    <p v-if="editForm.errors.is_default" class="text-xs text-red-400">
+                                        {{ editForm.errors.is_default }}
+                                    </p>
+                                    <p v-if="editForm.errors.is_active" class="text-xs text-red-400">
+                                        {{ editForm.errors.is_active }}
+                                    </p>
+
+                                    <div class="flex gap-2">
+                                        <button
+                                            type="submit"
+                                            :disabled="editForm.processing"
+                                            class="rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 disabled:opacity-50"
+                                        >
+                                            저장
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="rounded-lg border border-neutral-700 px-3 py-2 text-sm text-neutral-300"
+                                            @click="cancelEdit"
+                                        >
+                                            취소
+                                        </button>
                                     </div>
-                                </div>
-
-                                <div class="flex items-center gap-6">
-                                    <label class="flex items-center gap-2 text-sm text-neutral-400">
-                                        <input v-model="editForm.is_default" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
-                                        기본 정책
-                                    </label>
-                                    <label class="flex items-center gap-2 text-sm text-neutral-400">
-                                        <input v-model="editForm.is_active" type="checkbox" class="rounded border-neutral-600 bg-neutral-950">
-                                        사용
-                                    </label>
-                                </div>
-
-                                <p v-if="editForm.errors.is_default" class="text-xs text-red-400">
-                                    {{ editForm.errors.is_default }}
-                                </p>
-                                <p v-if="editForm.errors.is_active" class="text-xs text-red-400">
-                                    {{ editForm.errors.is_active }}
-                                </p>
-
-                                <div class="flex gap-2">
-                                    <button
-                                        type="submit"
-                                        :disabled="editForm.processing"
-                                        class="rounded-lg bg-neutral-100 px-3 py-2 text-sm font-medium text-neutral-900 disabled:opacity-50"
-                                    >
-                                        저장
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="rounded-lg border border-neutral-700 px-3 py-2 text-sm text-neutral-300"
-                                        @click="cancelEdit"
-                                    >
-                                        취소
-                                    </button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                </template>
-            </tbody>
-        </table>
+                                </form>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
 
         <form class="mt-8 max-w-4xl space-y-4 rounded-lg border border-neutral-800 p-4" @submit.prevent="submitCreate">
             <p class="text-sm font-medium">정책 추가</p>

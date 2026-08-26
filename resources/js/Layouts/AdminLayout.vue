@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 
 defineProps({
@@ -19,6 +19,19 @@ const todos = computed(() => (page.props.adminTodo ?? []).filter((t) => t.count 
 const todoTotal = computed(() => todos.value.reduce((sum, t) => sum + t.count, 0));
 
 const showTodos = ref(false);
+
+/*
+ * 사이드바는 좁은 화면에서 화면을 거의 다 덮는다(w-60). lg 미만에서는 숨겨두고
+ * 헤더 버튼으로 밀어서 연다.
+ */
+const sidebarOpen = ref(false);
+
+// 페이지가 바뀌면 열려 있던 것들을 닫는다.
+watch(() => page.url, () => {
+    sidebarOpen.value = false;
+    showTodos.value = false;
+});
+
 const status = computed(() => page.props.flash?.status);
 const currentPath = computed(() => new URL(page.url, 'http://localhost').pathname);
 
@@ -29,7 +42,17 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
     <Head :title="title" />
 
     <div class="flex min-h-full bg-neutral-950 text-neutral-100">
-        <aside class="w-60 shrink-0 border-r border-neutral-800 p-4">
+        <!-- 좁은 화면에서 사이드바를 열었을 때 뒤를 덮는 막. 누르면 닫힌다. -->
+        <div
+            v-if="sidebarOpen"
+            class="fixed inset-0 z-30 bg-black/60 lg:hidden"
+            @click="sidebarOpen = false"
+        />
+
+        <aside
+            class="fixed inset-y-0 left-0 z-40 w-60 shrink-0 overflow-y-auto border-r border-neutral-800 bg-neutral-950 p-4 transition-transform lg:static lg:translate-x-0"
+            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+        >
             <Link href="/admin" class="block text-sm font-semibold">쇼핑몰 관리자</Link>
 
             <nav class="mt-6 space-y-5">
@@ -69,10 +92,21 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
         </aside>
 
         <div class="flex min-w-0 flex-1 flex-col">
-            <header class="flex items-center justify-between border-b border-neutral-800 px-6 py-3">
-                <h1 class="text-sm font-medium">{{ title }}</h1>
+            <header class="flex items-center justify-between gap-2 border-b border-neutral-800 px-4 py-3 sm:px-6">
+                <div class="flex min-w-0 items-center gap-2">
+                    <button
+                        type="button"
+                        class="rounded border border-neutral-700 px-2 py-1 text-sm text-neutral-300 lg:hidden"
+                        aria-label="메뉴 열기"
+                        :aria-expanded="sidebarOpen"
+                        @click="sidebarOpen = true"
+                    >
+                        ☰
+                    </button>
+                    <h1 class="truncate text-sm font-medium">{{ title }}</h1>
+                </div>
 
-                <div class="flex items-center gap-4 text-sm">
+                <div class="flex shrink-0 items-center gap-2 text-sm sm:gap-4">
                     <!-- 처리 대기 알림 -->
                     <div class="relative">
                         <button
@@ -81,7 +115,7 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
                             @click="showTodos = !showTodos"
                         >
                             <span aria-hidden="true">🔔</span>
-                            <span class="ml-1">알림</span>
+                            <span class="ml-1 hidden sm:inline">알림</span>
                             <span
                                 v-if="todoTotal > 0"
                                 class="ml-1 rounded-full bg-red-500 px-1.5 py-0.5 text-xs font-medium text-white"
@@ -95,7 +129,7 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
 
                         <div
                             v-if="showTodos"
-                            class="absolute right-0 z-20 mt-2 w-80 rounded-lg border border-neutral-700 bg-neutral-900 p-2 shadow-xl"
+                            class="absolute right-0 z-20 mt-2 w-72 rounded-lg border border-neutral-700 bg-neutral-900 p-2 shadow-xl sm:w-80"
                         >
                             <p v-if="todos.length === 0" class="px-3 py-4 text-center text-sm text-neutral-500">
                                 처리할 일이 없습니다.
@@ -119,9 +153,9 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
                         </div>
                     </div>
 
-                    <Link href="/admin/profile" class="text-neutral-400 transition hover:text-neutral-100">
+                    <Link href="/admin/profile" class="truncate text-neutral-400 transition hover:text-neutral-100">
                         {{ admin?.name }}
-                        <span v-if="admin?.role" class="text-neutral-600">· {{ admin.role }}</span>
+                        <span v-if="admin?.role" class="hidden text-neutral-600 sm:inline">· {{ admin.role }}</span>
                     </Link>
 
                     <Link
@@ -135,7 +169,7 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
                 </div>
             </header>
 
-            <main class="flex-1 p-6">
+            <main class="flex-1 p-4 sm:p-6">
                 <p
                     v-if="status"
                     class="mb-6 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300"

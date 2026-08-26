@@ -125,49 +125,51 @@ const btn = 'rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-40';
         </form>
 
         <div class="mt-6 overflow-hidden rounded-xl border border-neutral-800">
-            <table class="w-full text-sm">
-                <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
-                    <tr>
-                        <th class="px-4 py-3">주문번호</th>
-                        <th class="px-4 py-3">상품</th>
-                        <th class="px-4 py-3">유형</th>
-                        <th class="px-4 py-3">사유 · 귀책</th>
-                        <th class="px-4 py-3 text-right">환불액</th>
-                        <th class="px-4 py-3">상태</th>
-                        <th class="px-4 py-3">접수일시</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-neutral-800">
-                    <tr
-                        v-for="row in returns.data"
-                        :key="row.id"
-                        class="cursor-pointer hover:bg-neutral-900/40"
-                        @click="open(row)"
-                    >
-                        <td class="px-4 py-3 font-mono text-xs">{{ row.order_no }}</td>
-                        <td class="px-4 py-3">
-                            <p>{{ row.summary }}</p>
-                            <p class="text-xs text-neutral-500">{{ row.orderer_name }}</p>
-                        </td>
-                        <td class="px-4 py-3">{{ row.type_label }}</td>
-                        <td class="px-4 py-3 text-xs text-neutral-400">
-                            {{ row.reason_label }} · {{ row.responsibility_label }}
-                        </td>
-                        <td class="px-4 py-3 text-right">{{ won(row.refund_amount) }}</td>
-                        <td class="px-4 py-3">
-                            <span class="rounded px-2 py-0.5 text-xs" :class="statusTone[row.status]">
-                                {{ row.status_label }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 text-xs text-neutral-500">{{ row.requested_at }}</td>
-                    </tr>
-                    <tr v-if="returns.data.length === 0">
-                        <td colspan="7" class="px-4 py-10 text-center text-neutral-500">
-                            해당하는 반품·교환 신청이 없습니다.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="overflow-x-auto">
+                <table class="min-w-[44rem] w-full text-sm">
+                    <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
+                        <tr>
+                            <th class="px-4 py-3">주문번호</th>
+                            <th class="px-4 py-3">상품</th>
+                            <th class="px-4 py-3">유형</th>
+                            <th class="px-4 py-3">사유 · 귀책</th>
+                            <th class="px-4 py-3 text-right">환불액</th>
+                            <th class="px-4 py-3">상태</th>
+                            <th class="px-4 py-3">접수일시</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-neutral-800">
+                        <tr
+                            v-for="row in returns.data"
+                            :key="row.id"
+                            class="cursor-pointer hover:bg-neutral-900/40"
+                            @click="open(row)"
+                        >
+                            <td class="px-4 py-3 font-mono text-xs">{{ row.order_no }}</td>
+                            <td class="px-4 py-3">
+                                <p>{{ row.summary }}</p>
+                                <p class="text-xs text-neutral-500">{{ row.orderer_name }}</p>
+                            </td>
+                            <td class="px-4 py-3">{{ row.type_label }}</td>
+                            <td class="px-4 py-3 text-xs text-neutral-400">
+                                {{ row.reason_label }} · {{ row.responsibility_label }}
+                            </td>
+                            <td class="px-4 py-3 text-right">{{ won(row.refund_amount) }}</td>
+                            <td class="px-4 py-3">
+                                <span class="rounded px-2 py-0.5 text-xs" :class="statusTone[row.status]">
+                                    {{ row.status_label }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-xs text-neutral-500">{{ row.requested_at }}</td>
+                        </tr>
+                        <tr v-if="returns.data.length === 0">
+                            <td colspan="7" class="px-4 py-10 text-center text-neutral-500">
+                                해당하는 반품·교환 신청이 없습니다.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- 상세 · 처리 -->
@@ -199,29 +201,31 @@ const btn = 'rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-40';
 
                 <!-- 대상 상품 -->
                 <div class="mt-5 rounded-xl border border-neutral-800">
-                    <table class="w-full text-sm">
-                        <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
-                            <tr>
-                                <th class="px-3 py-2">상품</th>
-                                <th class="px-3 py-2 text-right">단가</th>
-                                <th class="px-3 py-2 text-right">수량</th>
-                                <th v-if="detail.type === 'EXCHANGE'" class="px-3 py-2">교환 옵션</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-neutral-800">
-                            <tr v-for="line in detail.items" :key="line.id">
-                                <td class="px-3 py-2">
-                                    {{ line.product_name }}
-                                    <span v-if="line.variant_name" class="text-neutral-500">/ {{ line.variant_name }}</span>
-                                </td>
-                                <td class="px-3 py-2 text-right">{{ won(line.unit_price) }}</td>
-                                <td class="px-3 py-2 text-right">{{ line.quantity }}</td>
-                                <td v-if="detail.type === 'EXCHANGE'" class="px-3 py-2 text-neutral-300">
-                                    {{ line.exchange_variant_name ?? '-' }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-[44rem] w-full text-sm">
+                            <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
+                                <tr>
+                                    <th class="px-3 py-2">상품</th>
+                                    <th class="px-3 py-2 text-right">단가</th>
+                                    <th class="px-3 py-2 text-right">수량</th>
+                                    <th v-if="detail.type === 'EXCHANGE'" class="px-3 py-2">교환 옵션</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-neutral-800">
+                                <tr v-for="line in detail.items" :key="line.id">
+                                    <td class="px-3 py-2">
+                                        {{ line.product_name }}
+                                        <span v-if="line.variant_name" class="text-neutral-500">/ {{ line.variant_name }}</span>
+                                    </td>
+                                    <td class="px-3 py-2 text-right">{{ won(line.unit_price) }}</td>
+                                    <td class="px-3 py-2 text-right">{{ line.quantity }}</td>
+                                    <td v-if="detail.type === 'EXCHANGE'" class="px-3 py-2 text-neutral-300">
+                                        {{ line.exchange_variant_name ?? '-' }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">

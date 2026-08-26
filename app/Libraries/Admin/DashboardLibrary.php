@@ -9,6 +9,7 @@ use App\Models\Admin;
 use App\Models\Order;
 use App\Models\ProductVariant;
 use App\Models\User;
+use App\Support\LocalTime;
 
 /**
  * 관리자 대시보드.
@@ -142,7 +143,7 @@ class DashboardLibrary
                 'status_label' => $o->status->label(),
                 'total_amount' => $o->total_amount,
                 'summary' => $this->itemSummary($o),
-                'ordered_at' => $o->ordered_at->toDateTimeString(),
+                'ordered_at' => LocalTime::dateTime($o->ordered_at),
             ])
             ->all();
     }

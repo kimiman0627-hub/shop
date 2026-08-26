@@ -72,59 +72,61 @@ const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-
             </button>
         </form>
 
-        <table class="mt-6 w-full text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">상품명</th>
-                    <th class="py-2 font-medium">카테고리</th>
-                    <th class="py-2 text-right font-medium">판매가</th>
-                    <th class="py-2 text-center font-medium">재고</th>
-                    <th class="py-2 text-center font-medium">예약</th>
-                    <th class="py-2 text-center font-medium">판매가능</th>
-                    <th class="py-2 text-center font-medium">상태</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="p in products.data" :key="p.id" class="border-b border-neutral-900">
-                    <td class="py-3">
-                        <Link :href="`/admin/products/${p.id}/edit`" class="flex items-center gap-3 hover:underline">
-                            <img
-                                v-if="p.thumbnail_url"
-                                :src="p.thumbnail_url"
-                                alt=""
-                                class="h-10 w-10 shrink-0 rounded object-cover"
-                            >
-                            <span
-                                v-else
-                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-neutral-900 text-xs text-neutral-700"
-                            >
-                                없음
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">상품명</th>
+                        <th class="py-2 font-medium">카테고리</th>
+                        <th class="py-2 text-right font-medium">판매가</th>
+                        <th class="py-2 text-center font-medium">재고</th>
+                        <th class="py-2 text-center font-medium">예약</th>
+                        <th class="py-2 text-center font-medium">판매가능</th>
+                        <th class="py-2 text-center font-medium">상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="p in products.data" :key="p.id" class="border-b border-neutral-900">
+                        <td class="py-3">
+                            <Link :href="`/admin/products/${p.id}/edit`" class="flex items-center gap-3 hover:underline">
+                                <img
+                                    v-if="p.thumbnail_url"
+                                    :src="p.thumbnail_url"
+                                    alt=""
+                                    class="h-10 w-10 shrink-0 rounded object-cover"
+                                >
+                                <span
+                                    v-else
+                                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-neutral-900 text-xs text-neutral-700"
+                                >
+                                    없음
+                                </span>
+                                {{ p.name }}
+                            </Link>
+                        </td>
+                        <td class="py-3 text-neutral-400">{{ p.category_name }}</td>
+                        <td class="py-3 text-right">
+                            <span>{{ won(p.display_price) }}</span>
+                            <span v-if="p.sale_price !== null" class="ml-2 text-xs text-neutral-600 line-through">
+                                {{ won(p.base_price) }}
                             </span>
-                            {{ p.name }}
-                        </Link>
-                    </td>
-                    <td class="py-3 text-neutral-400">{{ p.category_name }}</td>
-                    <td class="py-3 text-right">
-                        <span>{{ won(p.display_price) }}</span>
-                        <span v-if="p.sale_price !== null" class="ml-2 text-xs text-neutral-600 line-through">
-                            {{ won(p.base_price) }}
-                        </span>
-                    </td>
-                    <td class="py-3 text-center text-neutral-400">{{ p.stock_total }}</td>
-                    <td class="py-3 text-center" :class="p.reserved_total > 0 ? 'text-amber-300' : 'text-neutral-600'">
-                        {{ p.reserved_total }}
-                    </td>
-                    <td class="py-3 text-center" :class="p.available_total <= 0 ? 'text-red-400' : ''">
-                        {{ p.available_total }}
-                    </td>
-                    <td class="py-3 text-center">
-                        <span class="rounded bg-neutral-800 px-1.5 py-0.5 text-xs text-neutral-300">
-                            {{ p.status_label }}
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        </td>
+                        <td class="py-3 text-center text-neutral-400">{{ p.stock_total }}</td>
+                        <td class="py-3 text-center" :class="p.reserved_total > 0 ? 'text-amber-300' : 'text-neutral-600'">
+                            {{ p.reserved_total }}
+                        </td>
+                        <td class="py-3 text-center" :class="p.available_total <= 0 ? 'text-red-400' : ''">
+                            {{ p.available_total }}
+                        </td>
+                        <td class="py-3 text-center">
+                            <span class="rounded bg-neutral-800 px-1.5 py-0.5 text-xs text-neutral-300">
+                                {{ p.status_label }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <p v-if="products.data.length === 0" class="mt-6 text-sm text-neutral-500">
             상품이 없습니다.

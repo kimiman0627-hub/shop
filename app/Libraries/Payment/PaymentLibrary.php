@@ -11,6 +11,7 @@ use App\Exceptions\DomainRuleException;
 use App\Libraries\Order\OrderLibrary;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -178,11 +179,11 @@ class PaymentLibrary
                 'status' => $p->status->value,
                 'status_label' => $p->status->label(),
                 'order_status_label' => $p->order?->status->label(),
-                'requested_at' => $p->requested_at->toDateTimeString(),
-                'due_at' => $p->order?->payment_due_at?->toDateTimeString(),
+                'requested_at' => LocalTime::dateTime($p->requested_at),
+                'due_at' => LocalTime::dateTime($p->order?->payment_due_at),
                 'overdue' => $p->status === PaymentStatus::READY
                     && $p->order?->payment_due_at?->isPast() === true,
-                'paid_at' => $p->paid_at?->toDateTimeString(),
+                'paid_at' => LocalTime::dateTime($p->paid_at),
                 'confirmed_by' => $p->confirmedBy?->name,
                 'memo' => $p->memo,
             ]);

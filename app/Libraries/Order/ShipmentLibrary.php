@@ -9,6 +9,7 @@ use App\Enums\Order\ShipmentStatus;
 use App\Exceptions\DomainRuleException;
 use App\Models\Order;
 use App\Models\Shipment;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -178,8 +179,8 @@ class ShipmentLibrary
             'carrier_name' => $shipment->carrierName(),
             'tracking_no' => $shipment->tracking_no,
             'tracking_url' => $shipment->trackingUrl(),
-            'shipped_at' => $shipment->shipped_at?->toDateTimeString(),
-            'delivered_at' => $shipment->delivered_at?->toDateTimeString(),
+            'shipped_at' => LocalTime::dateTime($shipment->shipped_at),
+            'delivered_at' => LocalTime::dateTime($shipment->delivered_at),
         ];
     }
 
@@ -213,15 +214,15 @@ class ShipmentLibrary
             'receiver_phone' => $order->receiver_phone,
             'address' => "({$order->postcode}) {$order->address1} ".($order->address2 ?? ''),
             'delivery_memo' => $order->delivery_memo,
-            'paid_at' => $order->paid_at?->toDateTimeString(),
+            'paid_at' => LocalTime::dateTime($order->paid_at),
             'item_summary' => $this->itemSummary($order),
 
             'carrier' => $shipment?->carrier,
             'carrier_name' => $shipment?->carrierName(),
             'tracking_no' => $shipment?->tracking_no,
             'tracking_url' => $shipment?->trackingUrl(),
-            'shipped_at' => $shipment?->shipped_at?->toDateTimeString(),
-            'delivered_at' => $shipment?->delivered_at?->toDateTimeString(),
+            'shipped_at' => LocalTime::dateTime($shipment?->shipped_at),
+            'delivered_at' => LocalTime::dateTime($shipment?->delivered_at),
             'shipped_by' => $shipment?->shippedBy?->name,
             'memo' => $shipment?->memo,
         ];

@@ -10,6 +10,7 @@ use App\Exceptions\DomainRuleException;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductReview;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -55,7 +56,7 @@ class ProductReviewLibrary
                 'product_name' => $item->product_name,
                 'variant_name' => $item->variant_name,
                 'order_no' => $item->order->order_no,
-                'ordered_at' => $item->order->ordered_at->toDateString(),
+                'ordered_at' => LocalTime::date($item->order->ordered_at),
             ])
             ->all();
     }
@@ -327,8 +328,8 @@ class ProductReviewLibrary
             'content' => $review->content,
             'variant_name' => $review->orderItem?->variant_name,
             'admin_reply' => $review->admin_reply,
-            'replied_at' => $review->replied_at?->toDateString(),
-            'created_at' => $review->created_at->toDateString(),
+            'replied_at' => LocalTime::date($review->replied_at),
+            'created_at' => LocalTime::date($review->created_at),
         ];
     }
 

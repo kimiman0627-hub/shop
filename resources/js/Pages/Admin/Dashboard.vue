@@ -113,7 +113,7 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">
             <!-- 인기 상품 -->
-            <section v-if="topProducts">
+            <section v-if="topProducts" class="min-w-0">
                 <h3 class="text-sm font-medium text-neutral-400">최근 30일 많이 팔린 상품</h3>
                 <div :class="[card, 'mt-3']">
                     <ol v-if="topProducts.length" class="space-y-3">
@@ -123,7 +123,7 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
                             class="flex items-center gap-3 text-sm"
                         >
                             <span class="w-5 shrink-0 text-neutral-600">{{ i + 1 }}</span>
-                            <span class="flex-1 truncate">{{ p.name }}</span>
+                            <span class="min-w-0 flex-1 truncate">{{ p.name }}</span>
                             <span class="shrink-0 text-neutral-500">{{ num(p.quantity) }}개</span>
                             <span class="w-24 shrink-0 text-right">{{ won(p.amount) }}</span>
                         </li>
@@ -133,14 +133,14 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
             </section>
 
             <!-- 재고 경고 -->
-            <section v-if="lowStock">
+            <section v-if="lowStock" class="min-w-0">
                 <h3 class="text-sm font-medium text-neutral-400">재고 부족</h3>
                 <div :class="[card, 'mt-3']">
                     <ul v-if="lowStock.length" class="space-y-3">
                         <li v-for="v in lowStock" :key="v.sku" class="flex items-center gap-3 text-sm">
                             <Link
                                 :href="`/admin/products/${v.product_id}/edit`"
-                                class="flex-1 truncate hover:underline"
+                                class="min-w-0 flex-1 truncate hover:underline"
                             >
                                 {{ v.product_name }}
                                 <span class="text-neutral-500">/ {{ v.option_label }}</span>
@@ -173,39 +173,41 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
             </div>
 
             <div class="mt-3 overflow-hidden rounded-xl border border-neutral-800">
-                <table class="w-full text-sm">
-                    <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
-                        <tr>
-                            <th class="px-4 py-3">주문번호</th>
-                            <th class="px-4 py-3">주문자</th>
-                            <th class="px-4 py-3">상품</th>
-                            <th class="px-4 py-3 text-right">결제금액</th>
-                            <th class="px-4 py-3">상태</th>
-                            <th class="px-4 py-3">주문일시</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-neutral-800">
-                        <tr v-for="o in recentOrders" :key="o.id" class="hover:bg-neutral-900/40">
-                            <td class="px-4 py-3">
-                                <Link :href="`/admin/orders/${o.id}`" class="font-mono text-xs hover:underline">
-                                    {{ o.order_no }}
-                                </Link>
-                            </td>
-                            <td class="px-4 py-3">{{ o.orderer_name }}</td>
-                            <td class="px-4 py-3 text-neutral-300">{{ o.summary }}</td>
-                            <td class="px-4 py-3 text-right">{{ won(o.total_amount) }}</td>
-                            <td class="px-4 py-3">
-                                <span class="rounded px-2 py-0.5 text-xs" :class="statusTone[o.status]">
-                                    {{ o.status_label }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-xs text-neutral-500">{{ o.ordered_at }}</td>
-                        </tr>
-                        <tr v-if="recentOrders.length === 0">
-                            <td colspan="6" class="px-4 py-10 text-center text-neutral-500">주문이 없습니다.</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="min-w-[44rem] w-full text-sm">
+                        <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
+                            <tr>
+                                <th class="px-4 py-3">주문번호</th>
+                                <th class="px-4 py-3">주문자</th>
+                                <th class="px-4 py-3">상품</th>
+                                <th class="px-4 py-3 text-right">결제금액</th>
+                                <th class="px-4 py-3">상태</th>
+                                <th class="px-4 py-3">주문일시</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-neutral-800">
+                            <tr v-for="o in recentOrders" :key="o.id" class="hover:bg-neutral-900/40">
+                                <td class="px-4 py-3">
+                                    <Link :href="`/admin/orders/${o.id}`" class="font-mono text-xs hover:underline">
+                                        {{ o.order_no }}
+                                    </Link>
+                                </td>
+                                <td class="px-4 py-3">{{ o.orderer_name }}</td>
+                                <td class="px-4 py-3 text-neutral-300">{{ o.summary }}</td>
+                                <td class="px-4 py-3 text-right">{{ won(o.total_amount) }}</td>
+                                <td class="px-4 py-3">
+                                    <span class="rounded px-2 py-0.5 text-xs" :class="statusTone[o.status]">
+                                        {{ o.status_label }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-xs text-neutral-500">{{ o.ordered_at }}</td>
+                            </tr>
+                            <tr v-if="recentOrders.length === 0">
+                                <td colspan="6" class="px-4 py-10 text-center text-neutral-500">주문이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 

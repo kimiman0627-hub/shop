@@ -80,80 +80,82 @@ const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-
             </button>
         </form>
 
-        <table class="mt-6 w-full text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">주문번호</th>
-                    <th class="py-2 font-medium">입금자명</th>
-                    <th class="py-2 text-right font-medium">입금액</th>
-                    <th class="py-2 font-medium">요청일시</th>
-                    <th class="py-2 font-medium">입금기한</th>
-                    <th class="py-2 text-center font-medium">상태</th>
-                    <th class="w-64 py-2" />
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="row in payments.data" :key="row.id" class="border-b border-neutral-900 align-top">
-                    <td class="py-3">
-                        <p class="font-mono text-xs">{{ row.order_no }}</p>
-                        <p class="mt-0.5 text-xs text-neutral-500">
-                            {{ row.orderer_name }} · {{ row.orderer_phone }}
-                        </p>
-                        <p class="mt-0.5 text-xs text-neutral-600">주문: {{ row.order_status_label }}</p>
-                    </td>
-                    <td class="py-3">{{ row.depositor_name }}</td>
-                    <td class="py-3 text-right font-medium">{{ won(row.amount) }}</td>
-                    <td class="py-3 text-neutral-400">{{ row.requested_at }}</td>
-                    <td class="py-3" :class="row.overdue ? 'text-red-400' : 'text-neutral-400'">
-                        {{ row.due_at ?? '-' }}
-                        <span v-if="row.overdue" class="block text-xs">기한 초과</span>
-                    </td>
-                    <td class="py-3 text-center">
-                        <span
-                            class="rounded px-1.5 py-0.5 text-xs"
-                            :class="row.status === 'PAID'
-                                ? 'bg-emerald-500/15 text-emerald-300'
-                                : row.status === 'READY'
-                                    ? 'bg-amber-500/15 text-amber-300'
-                                    : 'bg-neutral-700/40 text-neutral-400'"
-                        >
-                            {{ row.status_label }}
-                        </span>
-                        <p v-if="row.confirmed_by" class="mt-1 text-xs text-neutral-600">
-                            {{ row.confirmed_by }}
-                        </p>
-                        <p v-if="row.paid_at" class="text-xs text-neutral-600">{{ row.paid_at }}</p>
-                    </td>
-                    <td class="py-3">
-                        <template v-if="row.status === 'READY'">
-                            <input
-                                v-model="memo[row.id]"
-                                type="text"
-                                placeholder="메모 (선택)"
-                                class="w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs outline-none focus:border-neutral-400"
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">주문번호</th>
+                        <th class="py-2 font-medium">입금자명</th>
+                        <th class="py-2 text-right font-medium">입금액</th>
+                        <th class="py-2 font-medium">요청일시</th>
+                        <th class="py-2 font-medium">입금기한</th>
+                        <th class="py-2 text-center font-medium">상태</th>
+                        <th class="w-64 py-2" />
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="row in payments.data" :key="row.id" class="border-b border-neutral-900 align-top">
+                        <td class="py-3">
+                            <p class="font-mono text-xs">{{ row.order_no }}</p>
+                            <p class="mt-0.5 text-xs text-neutral-500">
+                                {{ row.orderer_name }} · {{ row.orderer_phone }}
+                            </p>
+                            <p class="mt-0.5 text-xs text-neutral-600">주문: {{ row.order_status_label }}</p>
+                        </td>
+                        <td class="py-3">{{ row.depositor_name }}</td>
+                        <td class="py-3 text-right font-medium">{{ won(row.amount) }}</td>
+                        <td class="py-3 text-neutral-400">{{ row.requested_at }}</td>
+                        <td class="py-3" :class="row.overdue ? 'text-red-400' : 'text-neutral-400'">
+                            {{ row.due_at ?? '-' }}
+                            <span v-if="row.overdue" class="block text-xs">기한 초과</span>
+                        </td>
+                        <td class="py-3 text-center">
+                            <span
+                                class="rounded px-1.5 py-0.5 text-xs"
+                                :class="row.status === 'PAID'
+                                    ? 'bg-emerald-500/15 text-emerald-300'
+                                    : row.status === 'READY'
+                                        ? 'bg-amber-500/15 text-amber-300'
+                                        : 'bg-neutral-700/40 text-neutral-400'"
                             >
-                            <div class="mt-2 flex gap-2">
-                                <button
-                                    type="button"
-                                    class="rounded bg-emerald-600 px-3 py-1 text-xs font-medium text-white hover:bg-emerald-500"
-                                    @click="confirm_(row)"
+                                {{ row.status_label }}
+                            </span>
+                            <p v-if="row.confirmed_by" class="mt-1 text-xs text-neutral-600">
+                                {{ row.confirmed_by }}
+                            </p>
+                            <p v-if="row.paid_at" class="text-xs text-neutral-600">{{ row.paid_at }}</p>
+                        </td>
+                        <td class="py-3">
+                            <template v-if="row.status === 'READY'">
+                                <input
+                                    v-model="memo[row.id]"
+                                    type="text"
+                                    placeholder="메모 (선택)"
+                                    class="w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-xs outline-none focus:border-neutral-400"
                                 >
-                                    결제완료
-                                </button>
-                                <button
-                                    type="button"
-                                    class="rounded border border-red-500/40 px-3 py-1 text-xs text-red-400 hover:bg-red-500/10"
-                                    @click="cancel_(row)"
-                                >
-                                    주문취소
-                                </button>
-                            </div>
-                        </template>
-                        <p v-else-if="row.memo" class="text-xs text-neutral-500">{{ row.memo }}</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                                <div class="mt-2 flex gap-2">
+                                    <button
+                                        type="button"
+                                        class="rounded bg-emerald-600 px-3 py-1 text-xs font-medium text-white hover:bg-emerald-500"
+                                        @click="confirm_(row)"
+                                    >
+                                        결제완료
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="rounded border border-red-500/40 px-3 py-1 text-xs text-red-400 hover:bg-red-500/10"
+                                        @click="cancel_(row)"
+                                    >
+                                        주문취소
+                                    </button>
+                                </div>
+                            </template>
+                            <p v-else-if="row.memo" class="text-xs text-neutral-500">{{ row.memo }}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <p v-if="payments.data.length === 0" class="mt-6 text-sm text-neutral-500">
             해당하는 건이 없습니다.

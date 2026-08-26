@@ -93,47 +93,49 @@ const remove = (role) => {
             </button>
         </form>
 
-        <table class="mt-6 w-full max-w-4xl text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">코드</th>
-                    <th class="py-2 font-medium">이름</th>
-                    <th class="py-2 font-medium">설명</th>
-                    <th class="py-2 font-medium">소속</th>
-                    <th class="py-2" />
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="role in roles" :key="role.id" class="border-b border-neutral-900">
-                    <td class="py-3 font-mono text-xs text-neutral-400">{{ role.code }}</td>
-                    <td class="py-3">
-                        {{ role.name }}
-                        <span v-if="role.is_super_admin" class="ml-2 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300">
-                            전체 권한
-                        </span>
-                    </td>
-                    <td class="py-3 text-neutral-500">{{ role.description }}</td>
-                    <td class="py-3 text-neutral-400">{{ role.admin_count }}명</td>
-                    <td class="py-3 text-right">
-                        <Link
-                            v-if="!role.is_super_admin"
-                            :href="`/admin/settings/roles/${role.id}/edit`"
-                            class="text-neutral-400 hover:text-neutral-100"
-                        >
-                            권한 편집
-                        </Link>
-                        <button
-                            v-if="!role.is_super_admin && role.admin_count === 0"
-                            type="button"
-                            class="ml-4 text-red-400 hover:text-red-300"
-                            @click="remove(role)"
-                        >
-                            삭제
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full max-w-4xl text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">코드</th>
+                        <th class="py-2 font-medium">이름</th>
+                        <th class="py-2 font-medium">설명</th>
+                        <th class="py-2 font-medium">소속</th>
+                        <th class="py-2" />
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="role in roles" :key="role.id" class="border-b border-neutral-900">
+                        <td class="py-3 font-mono text-xs text-neutral-400">{{ role.code }}</td>
+                        <td class="py-3">
+                            {{ role.name }}
+                            <span v-if="role.is_super_admin" class="ml-2 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300">
+                                전체 권한
+                            </span>
+                        </td>
+                        <td class="py-3 text-neutral-500">{{ role.description }}</td>
+                        <td class="py-3 text-neutral-400">{{ role.admin_count }}명</td>
+                        <td class="py-3 text-right">
+                            <Link
+                                v-if="!role.is_super_admin"
+                                :href="`/admin/settings/roles/${role.id}/edit`"
+                                class="text-neutral-400 hover:text-neutral-100"
+                            >
+                                권한 편집
+                            </Link>
+                            <button
+                                v-if="!role.is_super_admin && role.admin_count === 0"
+                                type="button"
+                                class="ml-4 text-red-400 hover:text-red-300"
+                                @click="remove(role)"
+                            >
+                                삭제
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <p class="mt-4 max-w-4xl text-xs text-neutral-600">
             최고관리자 역할은 권한 검사를 전부 통과하므로 편집·삭제할 수 없습니다.

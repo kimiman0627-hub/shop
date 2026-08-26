@@ -66,50 +66,52 @@ const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-
             </button>
         </form>
 
-        <table class="mt-6 w-full text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">주문번호</th>
-                    <th class="py-2 font-medium">주문자</th>
-                    <th class="py-2 font-medium">상품</th>
-                    <th class="py-2 text-right font-medium">결제금액</th>
-                    <th class="py-2 font-medium">주문일시</th>
-                    <th class="py-2 text-center font-medium">상태</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="o in orders.data" :key="o.id" class="border-b border-neutral-900">
-                    <td class="py-3">
-                        <Link :href="`/admin/orders/${o.id}`" class="font-mono text-xs hover:underline">
-                            {{ o.order_no }}
-                        </Link>
-                        <p v-if="o.tracking_no" class="mt-0.5 font-mono text-xs text-neutral-600">
-                            {{ o.tracking_no }}
-                        </p>
-                    </td>
-                    <td class="py-3">
-                        {{ o.orderer_name }}
-                        <span v-if="o.is_guest" class="ml-1 rounded bg-neutral-800 px-1 py-0.5 text-xs text-neutral-400">
-                            비회원
-                        </span>
-                        <p class="mt-0.5 text-xs text-neutral-600">{{ o.orderer_phone }}</p>
-                    </td>
-                    <td class="py-3 text-neutral-300">{{ o.item_summary }}</td>
-                    <td class="py-3 text-right">{{ won(o.total_amount) }}</td>
-                    <td class="py-3 text-neutral-400">
-                        {{ o.ordered_at }}
-                        <p v-if="o.overdue" class="mt-0.5 text-xs text-red-400">
-                            입금기한 초과
-                        </p>
-                    </td>
-                    <td class="py-3 text-center">
-                        <span class="rounded px-1.5 py-0.5 text-xs" :class="statusClass(o.status)">
-                            {{ o.status_label }}
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">주문번호</th>
+                        <th class="py-2 font-medium">주문자</th>
+                        <th class="py-2 font-medium">상품</th>
+                        <th class="py-2 text-right font-medium">결제금액</th>
+                        <th class="py-2 font-medium">주문일시</th>
+                        <th class="py-2 text-center font-medium">상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="o in orders.data" :key="o.id" class="border-b border-neutral-900">
+                        <td class="py-3">
+                            <Link :href="`/admin/orders/${o.id}`" class="font-mono text-xs hover:underline">
+                                {{ o.order_no }}
+                            </Link>
+                            <p v-if="o.tracking_no" class="mt-0.5 font-mono text-xs text-neutral-600">
+                                {{ o.tracking_no }}
+                            </p>
+                        </td>
+                        <td class="py-3">
+                            {{ o.orderer_name }}
+                            <span v-if="o.is_guest" class="ml-1 rounded bg-neutral-800 px-1 py-0.5 text-xs text-neutral-400">
+                                비회원
+                            </span>
+                            <p class="mt-0.5 text-xs text-neutral-600">{{ o.orderer_phone }}</p>
+                        </td>
+                        <td class="py-3 text-neutral-300">{{ o.item_summary }}</td>
+                        <td class="py-3 text-right">{{ won(o.total_amount) }}</td>
+                        <td class="py-3 text-neutral-400">
+                            {{ o.ordered_at }}
+                            <p v-if="o.overdue" class="mt-0.5 text-xs text-red-400">
+                                입금기한 초과
+                            </p>
+                        </td>
+                        <td class="py-3 text-center">
+                            <span class="rounded px-1.5 py-0.5 text-xs" :class="statusClass(o.status)">
+                                {{ o.status_label }}
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <p v-if="orders.data.length === 0" class="mt-6 text-sm text-neutral-500">
             조건에 맞는 주문이 없습니다.

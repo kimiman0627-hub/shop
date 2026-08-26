@@ -9,6 +9,7 @@ use App\Enums\Coupon\CouponIssueType;
 use App\Exceptions\DomainRuleException;
 use App\Models\Coupon;
 use App\Models\UserCoupon;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -52,8 +53,8 @@ class CouponLibrary
             'max_discount_amount' => $coupon->max_discount_amount,
             'min_order_amount' => $coupon->min_order_amount,
             'valid_days' => $coupon->valid_days,
-            'valid_from' => $coupon->valid_from?->toDateString(),
-            'valid_until' => $coupon->valid_until?->toDateString(),
+            'valid_from' => LocalTime::date($coupon->valid_from),
+            'valid_until' => LocalTime::date($coupon->valid_until),
             'total_issue_limit' => $coupon->total_issue_limit,
             'per_user_limit' => $coupon->per_user_limit,
             'is_active' => $coupon->is_active,
@@ -77,9 +78,9 @@ class CouponLibrary
                 'id' => $uc->id,
                 'user_name' => $uc->user?->name,
                 'user_email' => $uc->user?->email,
-                'issued_at' => $uc->issued_at->toDateTimeString(),
-                'expires_at' => $uc->expires_at->toDateTimeString(),
-                'used_at' => $uc->used_at?->toDateTimeString(),
+                'issued_at' => LocalTime::dateTime($uc->issued_at),
+                'expires_at' => LocalTime::dateTime($uc->expires_at),
+                'used_at' => LocalTime::dateTime($uc->used_at),
                 'expired' => $uc->isExpired(),
             ]);
     }
@@ -229,7 +230,7 @@ class CouponLibrary
             ->map(fn (UserCoupon $uc) => [
                 'id' => $uc->id,
                 'name' => $uc->coupon->name,
-                'expires_at' => $uc->expires_at->toDateString(),
+                'expires_at' => LocalTime::date($uc->expires_at),
                 'min_order_amount' => $uc->coupon->min_order_amount,
                 'discount' => $this->discountFor($uc, $itemsTotal),
                 // 최소 주문금액 미달이면 목록에는 보이되 선택은 막는다.
@@ -325,7 +326,7 @@ class CouponLibrary
                 'name' => $uc->coupon?->name,
                 'discount_label' => $this->discountLabel($uc->coupon),
                 'min_order_amount' => $uc->coupon?->min_order_amount ?? 0,
-                'expires_at' => $uc->expires_at->toDateString(),
+                'expires_at' => LocalTime::date($uc->expires_at),
                 'used' => $uc->isUsed(),
                 'expired' => $uc->isExpired(),
                 'usable' => $uc->isUsable(),
@@ -430,7 +431,7 @@ class CouponLibrary
             'discount_label' => $this->discountLabel($c),
             'min_order_amount' => $c->min_order_amount,
             'valid_days' => $c->valid_days,
-            'valid_until' => $c->valid_until?->toDateString(),
+            'valid_until' => LocalTime::date($c->valid_until),
             'issued_count' => $c->issued_count,
             'used_count' => $c->used_count,
             'total_issue_limit' => $c->total_issue_limit,

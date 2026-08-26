@@ -65,24 +65,26 @@ const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-
 
         <div class="mt-6 flex gap-6">
             <div class="min-w-0 flex-1">
-                <table class="w-full text-sm">
-                    <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                        <tr>
-                            <th class="py-2 font-medium">카테고리명</th>
-                            <th class="py-2 font-medium">URL 주소</th>
-                            <th class="w-20 py-2 text-center font-medium">정렬</th>
-                            <th class="w-20 py-2 text-center font-medium">노출</th>
-                            <th class="w-28 py-2" />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <CategoryTreeRow
-                            :nodes="tree"
-                            :editing-id="editing?.id ?? null"
-                            @remove="remove"
-                        />
-                    </tbody>
-                </table>
+                <div class="overflow-x-auto">
+                    <table class="min-w-[44rem] w-full text-sm">
+                        <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                            <tr>
+                                <th class="py-2 font-medium">카테고리명</th>
+                                <th class="py-2 font-medium">URL 주소</th>
+                                <th class="w-20 py-2 text-center font-medium">정렬</th>
+                                <th class="w-20 py-2 text-center font-medium">노출</th>
+                                <th class="w-28 py-2" />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <CategoryTreeRow
+                                :nodes="tree"
+                                :editing-id="editing?.id ?? null"
+                                @remove="remove"
+                            />
+                        </tbody>
+                    </table>
+                </div>
 
                 <p v-if="tree.length === 0" class="mt-6 text-sm text-neutral-500">
                     등록된 카테고리가 없습니다. 오른쪽 폼으로 첫 카테고리를 만드세요.

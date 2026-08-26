@@ -17,6 +17,7 @@ use App\Models\OrderReturn;
 use App\Models\OrderReturnItem;
 use App\Models\Payment;
 use App\Models\ProductVariant;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -902,11 +903,11 @@ class ReturnLibrary
             'pickup' => $this->trackingView($return->pickup_carrier, $return->pickup_tracking_no),
             'exchange' => $this->trackingView($return->exchange_carrier, $return->exchange_tracking_no),
 
-            'requested_at' => $return->requested_at?->toDateTimeString(),
-            'approved_at' => $return->approved_at?->toDateTimeString(),
-            'received_at' => $return->received_at?->toDateTimeString(),
-            'completed_at' => $return->completed_at?->toDateTimeString(),
-            'rejected_at' => $return->rejected_at?->toDateTimeString(),
+            'requested_at' => LocalTime::dateTime($return->requested_at),
+            'approved_at' => LocalTime::dateTime($return->approved_at),
+            'received_at' => LocalTime::dateTime($return->received_at),
+            'completed_at' => LocalTime::dateTime($return->completed_at),
+            'rejected_at' => LocalTime::dateTime($return->rejected_at),
 
             'items' => $return->items->map(fn (OrderReturnItem $line) => [
                 'id' => $line->id,
@@ -946,7 +947,7 @@ class ReturnLibrary
             'summary' => $first === null
                 ? '-'
                 : ($first->orderItem?->product_name ?? '삭제된 상품').($extra > 0 ? " 외 {$extra}건" : ''),
-            'requested_at' => $return->requested_at?->toDateTimeString(),
+            'requested_at' => LocalTime::dateTime($return->requested_at),
         ];
     }
 

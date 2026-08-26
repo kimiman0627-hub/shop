@@ -59,59 +59,61 @@ const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-
             </button>
         </form>
 
-        <table class="mt-6 w-full text-sm">
-            <thead class="border-b border-neutral-800 text-left text-neutral-500">
-                <tr>
-                    <th class="py-2 font-medium">이름</th>
-                    <th class="py-2 font-medium">이메일</th>
-                    <th class="py-2 font-medium">전화번호</th>
-                    <th class="py-2 text-center font-medium">인증</th>
-                    <th class="py-2 text-center font-medium">주문</th>
-                    <th class="py-2 text-right font-medium">구매금액</th>
-                    <th class="py-2 font-medium">가입일</th>
-                    <th class="py-2 font-medium">마지막 로그인</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="m in members.data"
-                    :key="m.id"
-                    class="cursor-pointer border-b border-neutral-900 hover:bg-neutral-900"
-                    @click="open(m)"
-                >
-                    <td class="py-3">
-                        {{ m.name }}
-                        <span
-                            v-if="m.pending_inquiries_count > 0"
-                            class="ml-2 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300"
-                        >
-                            미답변 {{ m.pending_inquiries_count }}
-                        </span>
-                    </td>
-                    <td class="py-3 text-neutral-400">{{ m.email }}</td>
-                    <td class="py-3 text-neutral-500">{{ m.phone || '-' }}</td>
-                    <td class="py-3 text-center">
-                        <span
-                            class="rounded px-1.5 py-0.5 text-xs"
-                            :class="m.email_verified
-                                ? 'bg-emerald-500/15 text-emerald-300'
-                                : 'bg-neutral-700/40 text-neutral-400'"
-                        >
-                            {{ m.email_verified ? '완료' : '미인증' }}
-                        </span>
-                    </td>
-                    <td class="py-3 text-center text-neutral-400">
-                        {{ m.paid_orders_count }}
-                        <span v-if="m.orders_count !== m.paid_orders_count" class="text-neutral-600">
-                            / {{ m.orders_count }}
-                        </span>
-                    </td>
-                    <td class="py-3 text-right">{{ won(m.total_spent) }}</td>
-                    <td class="py-3 text-neutral-500">{{ m.joined_at }}</td>
-                    <td class="py-3 text-neutral-500">{{ m.last_login_at?.slice(0, 10) || '-' }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="overflow-x-auto">
+            <table class="min-w-[44rem] mt-6 w-full text-sm">
+                <thead class="border-b border-neutral-800 text-left text-neutral-500">
+                    <tr>
+                        <th class="py-2 font-medium">이름</th>
+                        <th class="py-2 font-medium">이메일</th>
+                        <th class="py-2 font-medium">전화번호</th>
+                        <th class="py-2 text-center font-medium">인증</th>
+                        <th class="py-2 text-center font-medium">주문</th>
+                        <th class="py-2 text-right font-medium">구매금액</th>
+                        <th class="py-2 font-medium">가입일</th>
+                        <th class="py-2 font-medium">마지막 로그인</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="m in members.data"
+                        :key="m.id"
+                        class="cursor-pointer border-b border-neutral-900 hover:bg-neutral-900"
+                        @click="open(m)"
+                    >
+                        <td class="py-3">
+                            {{ m.name }}
+                            <span
+                                v-if="m.pending_inquiries_count > 0"
+                                class="ml-2 rounded bg-amber-500/15 px-1.5 py-0.5 text-xs text-amber-300"
+                            >
+                                미답변 {{ m.pending_inquiries_count }}
+                            </span>
+                        </td>
+                        <td class="py-3 text-neutral-400">{{ m.email }}</td>
+                        <td class="py-3 text-neutral-500">{{ m.phone || '-' }}</td>
+                        <td class="py-3 text-center">
+                            <span
+                                class="rounded px-1.5 py-0.5 text-xs"
+                                :class="m.email_verified
+                                    ? 'bg-emerald-500/15 text-emerald-300'
+                                    : 'bg-neutral-700/40 text-neutral-400'"
+                            >
+                                {{ m.email_verified ? '완료' : '미인증' }}
+                            </span>
+                        </td>
+                        <td class="py-3 text-center text-neutral-400">
+                            {{ m.paid_orders_count }}
+                            <span v-if="m.orders_count !== m.paid_orders_count" class="text-neutral-600">
+                                / {{ m.orders_count }}
+                            </span>
+                        </td>
+                        <td class="py-3 text-right">{{ won(m.total_spent) }}</td>
+                        <td class="py-3 text-neutral-500">{{ m.joined_at }}</td>
+                        <td class="py-3 text-neutral-500">{{ m.last_login_at?.slice(0, 10) || '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <p v-if="members.data.length === 0" class="mt-6 text-sm text-neutral-500">
             조건에 맞는 회원이 없습니다.

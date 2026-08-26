@@ -12,6 +12,7 @@ use App\Models\MemberMemo;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
+use App\Support\LocalTime;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 
@@ -72,8 +73,8 @@ class MemberLibrary
                 'email' => $u->email,
                 'email_verified' => $u->hasVerifiedEmail(),
                 'phone' => $u->phone,
-                'joined_at' => $u->created_at?->toDateString(),
-                'last_login_at' => $u->last_login_at?->toDateTimeString(),
+                'joined_at' => LocalTime::date($u->created_at),
+                'last_login_at' => LocalTime::dateTime($u->last_login_at),
                 'orders_count' => $u->orders_count,
                 'paid_orders_count' => $u->paid_orders_count,
                 'total_spent' => (int) ($u->total_spent ?? 0),
@@ -96,12 +97,12 @@ class MemberLibrary
                 'name' => $user->name,
                 'email' => $user->email,
                 'email_verified' => $user->hasVerifiedEmail(),
-                'email_verified_at' => $user->email_verified_at?->toDateTimeString(),
+                'email_verified_at' => LocalTime::dateTime($user->email_verified_at),
                 'phone' => $user->phone,
                 'marketing_email_agreed' => $user->hasAgreedToEmailMarketing(),
                 'marketing_sms_agreed' => $user->hasAgreedToSmsMarketing(),
-                'joined_at' => $user->created_at?->toDateTimeString(),
-                'last_login_at' => $user->last_login_at?->toDateTimeString(),
+                'joined_at' => LocalTime::dateTime($user->created_at),
+                'last_login_at' => LocalTime::dateTime($user->last_login_at),
             ],
             'stats' => $this->stats($user->id),
             'addresses' => $this->addresses->listFor($user->id)->values()->all(),
@@ -222,7 +223,7 @@ class MemberLibrary
                     'status' => $o->status->value,
                     'status_label' => $o->status->label(),
                     'total_amount' => $o->total_amount,
-                    'ordered_at' => $o->ordered_at->toDateTimeString(),
+                    'ordered_at' => LocalTime::dateTime($o->ordered_at),
                     'item_summary' => $first === null
                         ? '-'
                         : ($more > 0 ? "{$first->product_name} 외 {$more}건" : $first->product_name),
@@ -264,8 +265,8 @@ class MemberLibrary
                 'status' => $p->status->value,
                 'status_label' => $p->status->label(),
                 'amount' => $p->amount,
-                'requested_at' => $p->requested_at->toDateTimeString(),
-                'paid_at' => $p->paid_at?->toDateTimeString(),
+                'requested_at' => LocalTime::dateTime($p->requested_at),
+                'paid_at' => LocalTime::dateTime($p->paid_at),
                 'confirmed_by' => $p->confirmedBy?->name,
             ])
             ->all();
@@ -291,9 +292,9 @@ class MemberLibrary
                 'status_label' => $i->status->label(),
                 'order_no' => $i->order?->order_no,
                 'answer' => $i->answer,
-                'answered_at' => $i->answered_at?->toDateTimeString(),
+                'answered_at' => LocalTime::dateTime($i->answered_at),
                 'answered_by' => $i->answeredBy?->name,
-                'created_at' => $i->created_at?->toDateTimeString(),
+                'created_at' => LocalTime::dateTime($i->created_at),
             ])
             ->all();
     }
@@ -312,7 +313,7 @@ class MemberLibrary
                 'id' => $m->id,
                 'content' => $m->content,
                 'admin_name' => $m->admin?->name ?? '(삭제된 관리자)',
-                'created_at' => $m->created_at?->toDateTimeString(),
+                'created_at' => LocalTime::dateTime($m->created_at),
             ])
             ->all();
     }

@@ -111,36 +111,38 @@ const savePermissions = () => permissionForm.put(`/admin/settings/roles/${props.
                         {{ group.name }}
                     </p>
 
-                    <table class="mt-2 w-full text-sm">
-                        <tbody>
-                            <tr v-for="(child, code) in group.children" :key="code" class="border-b border-neutral-900">
-                                <td class="py-2">{{ child.name }}</td>
-                                <td class="py-2 font-mono text-xs text-neutral-600">{{ code }}</td>
-                                <td class="w-24 py-2">
-                                    <label class="flex items-center gap-2 text-neutral-400">
-                                        <input
-                                            v-model="state[code].can_read"
-                                            type="checkbox"
-                                            class="rounded border-neutral-600 bg-neutral-950"
-                                            @change="onReadChange(code)"
-                                        >
-                                        조회
-                                    </label>
-                                </td>
-                                <td class="w-24 py-2">
-                                    <label class="flex items-center gap-2 text-neutral-400">
-                                        <input
-                                            v-model="state[code].can_write"
-                                            type="checkbox"
-                                            class="rounded border-neutral-600 bg-neutral-950"
-                                            @change="onWriteChange(code)"
-                                        >
-                                        쓰기
-                                    </label>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="mt-2 w-full text-sm">
+                            <tbody>
+                                <tr v-for="(child, code) in group.children" :key="code" class="border-b border-neutral-900">
+                                    <td class="py-2">{{ child.name }}</td>
+                                    <td class="py-2 font-mono text-xs text-neutral-600">{{ code }}</td>
+                                    <td class="w-24 py-2">
+                                        <label class="flex items-center gap-2 text-neutral-400">
+                                            <input
+                                                v-model="state[code].can_read"
+                                                type="checkbox"
+                                                class="rounded border-neutral-600 bg-neutral-950"
+                                                @change="onReadChange(code)"
+                                            >
+                                            조회
+                                        </label>
+                                    </td>
+                                    <td class="w-24 py-2">
+                                        <label class="flex items-center gap-2 text-neutral-400">
+                                            <input
+                                                v-model="state[code].can_write"
+                                                type="checkbox"
+                                                class="rounded border-neutral-600 bg-neutral-950"
+                                                @change="onWriteChange(code)"
+                                            >
+                                            쓰기
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

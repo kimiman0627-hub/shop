@@ -144,7 +144,7 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
         </div>
 
         <div class="mt-6 grid gap-6 lg:grid-cols-2">
-            <section>
+            <section class="min-w-0">
                 <h3 class="text-sm font-medium text-neutral-400">
                     카테고리별
                     <span class="ml-1 font-normal text-neutral-600">
@@ -173,7 +173,7 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
                 </div>
             </section>
 
-            <section>
+            <section class="min-w-0">
                 <h3 class="text-sm font-medium text-neutral-400">
                     상품별
                     <span class="ml-1 font-normal text-neutral-600">
@@ -181,27 +181,29 @@ const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
                     </span>
                 </h3>
                 <div class="mt-3 overflow-hidden rounded-xl border border-neutral-800">
-                    <table class="w-full text-sm">
-                        <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
-                            <tr>
-                                <th class="px-4 py-3">상품</th>
-                                <th class="px-4 py-3 text-right">수량</th>
-                                <th class="px-4 py-3 text-right">매출</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-neutral-800">
-                            <tr v-for="p in byProduct" :key="p.product_id ?? p.name">
-                                <td class="px-4 py-3">{{ p.name }}</td>
-                                <td class="px-4 py-3 text-right text-neutral-400">{{ num(p.quantity) }}</td>
-                                <td class="px-4 py-3 text-right">{{ won(p.amount) }}</td>
-                            </tr>
-                            <tr v-if="byProduct.length === 0">
-                                <td colspan="3" class="px-4 py-10 text-center text-neutral-500">
-                                    이 기간에 판매가 없습니다.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-[32rem] w-full text-sm">
+                            <thead class="bg-neutral-900/60 text-left text-xs text-neutral-400">
+                                <tr>
+                                    <th class="px-4 py-3">상품</th>
+                                    <th class="px-4 py-3 text-right">수량</th>
+                                    <th class="px-4 py-3 text-right">매출</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-neutral-800">
+                                <tr v-for="p in byProduct" :key="p.product_id ?? p.name">
+                                    <td class="px-4 py-3">{{ p.name }}</td>
+                                    <td class="px-4 py-3 text-right text-neutral-400">{{ num(p.quantity) }}</td>
+                                    <td class="px-4 py-3 text-right">{{ won(p.amount) }}</td>
+                                </tr>
+                                <tr v-if="byProduct.length === 0">
+                                    <td colspan="3" class="px-4 py-10 text-center text-neutral-500">
+                                        이 기간에 판매가 없습니다.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
         </div>
