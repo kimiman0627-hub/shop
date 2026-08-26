@@ -93,6 +93,11 @@ npm run build                      # 프로덕션 빌드
 데모 데이터는 전부 **라이브러리를 거쳐** 만든다 — 모델을 직접 만들면 slug·재고 예약·
 쿠폰 사용처리가 빠져서 시드 데이터만 앱이 만드는 것과 다른 모양이 된다.
 
+**상품 이미지는 실사 사진이다.** `database/seeders/Demo/photos/` 에 미리 받아둔
+Unsplash 무료 라이선스 사진 40장을 쓴다 — **시딩할 때 인터넷을 타지 않는다.**
+파일이 없으면 `DemoPhotoLibrary` 가 GD 로 그려서 채우므로 시딩이 멈추지 않는다.
+출처·규칙은 `database/seeders/Demo/photos/README.md` 참고.
+
 - 개발 서버는 사용자가 직접 띄우는 것을 기본으로 한다. Claude가 `php artisan serve`를 백그라운드로 오래 물고 있지 않는다.
 - `.env`는 절대 커밋하지 않고, 값을 임의로 바꾸지 않는다. 새 키가 필요하면 `.env.example`에도 같이 추가한다.
 

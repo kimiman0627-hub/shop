@@ -90,9 +90,10 @@ class DemoCatalogSeeder extends Seeder
             ]);
 
             // 상품마다 2컷. 목록은 대표 이미지만 쓰지만 상세에서 갤러리가 보인다.
+            // 실사 사진을 쓰고, 파일이 없으면 그려서 채운다 (DemoPhotoLibrary).
             $this->images->upload($product->id, [
-                DemoImageFactory::make($spec['code'], $spec['colors'][0], $spec['colors'][1], 0),
-                DemoImageFactory::make($spec['code'], $spec['colors'][1], $spec['colors'][0], 1),
+                DemoPhotoLibrary::make($spec['code'], 0, $spec['colors'][0], $spec['colors'][1]),
+                DemoPhotoLibrary::make($spec['code'], 1, $spec['colors'][1], $spec['colors'][0]),
             ]);
         }
     }

@@ -48,9 +48,9 @@ class DemoReviewSeeder extends Seeder
 
         foreach ($products as $index => $product) {
             $this->images->upload($product->id, [
-                DemoImageFactory::make('DETAIL 1', '#f2efe9', '#8d8578', $index),
-                DemoImageFactory::make('DETAIL 2', '#e9edf2', '#6f7c8d', $index + 1),
-                DemoImageFactory::make('DETAIL 3', '#efe9ef', '#867889', $index),
+                DemoPhotoLibrary::make('DETAIL', $index * 3, '#f2efe9', '#8d8578'),
+                DemoPhotoLibrary::make('DETAIL', $index * 3 + 1, '#e9edf2', '#6f7c8d'),
+                DemoPhotoLibrary::make('DETAIL', $index * 3 + 2, '#efe9ef', '#867889'),
             ], ProductImageType::DETAIL);
         }
     }

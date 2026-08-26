@@ -92,7 +92,7 @@ SQLite 로 간단히 돌리려면 `.env` 에서 `DB_CONNECTION=sqlite` 한 줄�
 
 ```bash
 php artisan migrate --seed   # 테이블 생성 + 운영에 필요한 기본 데이터
-php artisan shop:demo        # 데모 데이터 (상품·주문·후기 등) — 로컬 전용
+php artisan shop:demo        # 데모 데이터 (상품·주문·후기 등) — 로컬 전용, 실사 상품 사진 포함
 npm run build
 php artisan dev              # 서버 + Vite + 큐 + 로그를 한 번에
 ```
