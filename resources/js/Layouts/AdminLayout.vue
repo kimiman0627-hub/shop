@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
+import Icon from '@/Components/Icon.vue';
 
 defineProps({
     title: { type: String, required: true },
@@ -101,7 +102,7 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
                         :aria-expanded="sidebarOpen"
                         @click="sidebarOpen = true"
                     >
-                        ☰
+                        <Icon name="menu" class="size-5" />
                     </button>
                     <h1 class="truncate text-sm font-medium">{{ title }}</h1>
                 </div>
@@ -114,7 +115,7 @@ const isActive = (url) => url !== null && currentPath.value.startsWith(new URL(u
                             class="relative rounded px-2 py-1 text-neutral-400 transition hover:text-neutral-100"
                             @click="showTodos = !showTodos"
                         >
-                            <span aria-hidden="true">🔔</span>
+                            <Icon name="bell" class="inline-block size-5 align-text-bottom" />
                             <span class="ml-1 hidden sm:inline">알림</span>
                             <span
                                 v-if="todoTotal > 0"

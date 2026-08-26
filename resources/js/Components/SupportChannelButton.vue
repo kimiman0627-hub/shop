@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import Icon from '@/Components/Icon.vue';
 
 /**
  * 상담 채널 플로팅 버튼 (네이버 톡톡 · 카카오 채널 등).
@@ -23,7 +24,7 @@ const isEnabled = computed(() => Boolean(channel.value?.url));
         rel="noopener noreferrer"
         class="fixed right-5 bottom-20 z-30 lg:bottom-5 flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-emerald-600"
     >
-        <span aria-hidden="true">💬</span>
+        <Icon name="chat" class="size-5" />
         {{ channel.label }}
     </a>
 </template>

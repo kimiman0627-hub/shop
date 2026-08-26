@@ -152,6 +152,8 @@ app/
     Product/
     Admin/
   Support/                도메인에 안 묶이는 헬퍼
+.claude/
+  skills/                 UI/UX 참고 데이터 (3자 MIT, .claude/skills/README.md 참고)
 config/
   shop.php                쇼핑몰 공통 설정
   admin/
@@ -221,6 +223,17 @@ public function index(ProductSearchRequest $request)
 
 - 모델에는 관계, 캐스팅, 스코프, 접근자까지만 둔다.
 - 여러 테이블을 엮거나 조건이 붙는 조회는 모델이 아니라 라이브러리에서 조립한다.
+
+### 4.3 화면 만들 때 지키는 것
+
+- **아이콘에 이모지를 쓰지 않는다.** OS·브라우저마다 모양이 달라 일관성이 깨진다.
+  `resources/js/Components/Icon.vue` 에 경로를 추가해 쓴다(24×24 stroke, `currentColor`).
+- **`cursor-pointer` 를 컴포넌트마다 붙이지 않는다.** Tailwind 4 Preflight 가 버튼 커서를
+  `default` 로 되돌려서 `resources/css/app.css` 의 `@layer base` 에서 한 번에 정해뒀다.
+- **좁은 화면을 숫자로 확인한다.** 눈으로 보면 놓친다 —
+  `scrollWidth > clientWidth` 로 360·375·768·1024px 를 훑는다(밟으면 아픈 곳 §28).
+- `.claude/skills/ui-ux-pro-max` 에 UX 가이드라인과 검수 체크리스트가 있다.
+  **디자인 시스템 생성기로 쓰지 않는다** — 이유는 `.claude/skills/README.md` 에 적어뒀다.
 
 ## 5. DB 이식성 규칙 ★가장 중요★
 
