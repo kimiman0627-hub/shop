@@ -21,7 +21,7 @@ const isEnabled = computed(() => Boolean(channel.value?.url));
         :href="channel.url"
         target="_blank"
         rel="noopener noreferrer"
-        class="fixed right-5 bottom-5 z-30 flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-emerald-600"
+        class="fixed right-5 bottom-20 z-30 lg:bottom-5 flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-emerald-600"
     >
         <span aria-hidden="true">💬</span>
         {{ channel.label }}
