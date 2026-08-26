@@ -203,6 +203,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::middleware('admin.permission:STAT_SALES,READ')
         ->get('stats/sales', [StatController::class, 'sales'])->name('stats.sales');
 
+    // 통계 > 상품분석 (STAT_PRODUCT) — 조회·장바구니·구매·매출과 전환율
+    Route::middleware('admin.permission:STAT_PRODUCT,READ')
+        ->get('stats/products', [StatController::class, 'products'])->name('stats.products');
+
     // 회원관리 (MEMBER_LIST)
     Route::controller(MemberController::class)->prefix('members')->name('members.')->group(function () {
         Route::middleware('admin.permission:MEMBER_LIST,READ')

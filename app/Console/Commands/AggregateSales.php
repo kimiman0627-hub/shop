@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Libraries\Admin\SalesAggregateLibrary;
+use App\Libraries\Product\ProductStatLibrary;
 use Illuminate\Console\Command;
 
 /**
@@ -23,12 +24,16 @@ class AggregateSales extends Command
         {--days=3 : 다시 계산할 최근 일수(오늘 포함)}
         {--all : 주문이 있는 첫날부터 전부 다시 계산한다}';
 
-    protected $description = '일별 매출 집계 테이블을 갱신한다';
+    protected $description = '일별 매출·상품 집계 테이블을 갱신한다';
 
-    public function handle(SalesAggregateLibrary $aggregates): int
+    public function handle(SalesAggregateLibrary $aggregates, ProductStatLibrary $productStats): int
     {
         if ($this->option('all')) {
             $count = $aggregates->recomputeAll();
+
+            // 상품 집계도 같은 기간을 따라간다. 여기서 갱신되는 건 판매 실적뿐이고
+            // 조회·장바구니 카운트는 손대지 않는다 (ProductStatLibrary 참고).
+            $productStats->recomputeRecentSales(max($count, 1));
 
             $this->info($count === 0
                 ? '집계할 주문이 없습니다.'
@@ -39,8 +44,9 @@ class AggregateSales extends Command
 
         $days = max(1, (int) $this->option('days'));
         $count = $aggregates->recomputeRecent($days);
+        $productStats->recomputeRecentSales($days);
 
-        $this->info("최근 {$count}일 집계 완료");
+        $this->info("최근 {$count}일 집계 완료 (매출 + 상품별)");
 
         return self::SUCCESS;
     }

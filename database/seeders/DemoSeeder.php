@@ -9,6 +9,7 @@ use Database\Seeders\Demo\DemoCatalogSeeder;
 use Database\Seeders\Demo\DemoCouponSeeder;
 use Database\Seeders\Demo\DemoOrderSeeder;
 use Database\Seeders\Demo\DemoReviewSeeder;
+use Database\Seeders\Demo\DemoTrafficSeeder;
 use Illuminate\Database\Seeder;
 
 /**
@@ -54,6 +55,7 @@ class DemoSeeder extends Seeder
             DemoOrderSeeder::class,
             // 후기는 배송완료 주문이 있어야 만들 수 있다 — 주문 시더 뒤에 온다.
             DemoReviewSeeder::class,
+            DemoTrafficSeeder::class,
         ]);
 
         $this->command?->info('데모 데이터를 넣었습니다. 고객 계정 비밀번호는 전부 demo-local-1234 입니다.');

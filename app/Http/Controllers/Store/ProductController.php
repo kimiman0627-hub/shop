@@ -9,6 +9,7 @@ use App\Libraries\Product\CategoryLibrary;
 use App\Libraries\Product\ProductLibrary;
 use App\Libraries\Product\ProductQuestionLibrary;
 use App\Libraries\Product\ProductReviewLibrary;
+use App\Libraries\Product\ProductStatLibrary;
 use App\Libraries\Product\RecommendationLibrary;
 use App\Support\RecentlyViewed;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class ProductController extends Controller
         private readonly RecommendationLibrary $recommendations,
         private readonly ProductReviewLibrary $reviews,
         private readonly ProductQuestionLibrary $questions,
+        private readonly ProductStatLibrary $productStats,
     ) {}
 
     public function index(Request $request): Response
@@ -57,6 +59,12 @@ class ProductController extends Controller
 
         // 본 기록은 쿠키에 남긴다. 응답에 붙일 쿠키는 큐에 들어간다.
         RecentlyViewed::push($request, $product['id']);
+
+        /*
+         * 관리자 상품분석용 조회수. **여기서 세지 않으면 영영 알 수 없다** —
+         * 상품 상세를 열었다는 사실은 다른 테이블에 아무 흔적도 남기지 않는다.
+         */
+        $this->productStats->recordView($product['id']);
 
         return Inertia::render('Store/Product/Show', [
             'product' => $product,

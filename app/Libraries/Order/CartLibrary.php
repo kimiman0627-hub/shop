@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Libraries\Order;
 
 use App\Exceptions\DomainRuleException;
+use App\Libraries\Product\ProductStatLibrary;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\ProductVariant;
@@ -25,6 +26,8 @@ class CartLibrary
 {
     /** 한 조합을 담을 수 있는 최대 수량. 오타로 9999 를 담는 사고를 막는다. */
     private const MAX_QUANTITY = 99;
+
+    public function __construct(private readonly ProductStatLibrary $productStats) {}
 
     public function resolve(CartOwner $owner): Cart
     {
@@ -166,6 +169,13 @@ class CartLibrary
 
             $item->fill(['quantity' => $next])->save();
         });
+
+        /*
+         * 상품분석용 '장바구니 담기' 카운트. 수량이 아니라 담은 행위를 센다 —
+         * 조회 대비 얼마나 담기로 이어지는지가 보고 싶은 값이다.
+         * 트랜잭션 밖이다: 집계가 실패해도 장바구니는 이미 정상 처리됐다.
+         */
+        $this->productStats->recordCartAdd($variant->product_id);
     }
 
     public function updateQuantity(CartOwner $owner, int $itemId, int $quantity): void

@@ -55,6 +55,7 @@ return [
         'name' => '통계',
         'children' => [
             'STAT_SALES' => ['name' => '매출통계', 'route' => 'admin.stats.sales'],
+            'STAT_PRODUCT' => ['name' => '상품분석', 'route' => 'admin.stats.products'],
         ],
     ],
 

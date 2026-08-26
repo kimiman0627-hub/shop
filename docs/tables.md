@@ -5,7 +5,7 @@
 >
 > 스키마를 바꾸면 이 문서도 같이 고친다. 안 고치면 금방 거짓말이 된다.
 
-**앱 테이블 31개** (Laravel 기본 테이블 8개 — `migrations` `sessions` `cache` `cache_locks` `jobs` `job_batches` `failed_jobs` `password_reset_tokens` — 는 제외)
+**앱 테이블 32개** (Laravel 기본 테이블 8개 — `migrations` `sessions` `cache` `cache_locks` `jobs` `job_batches` `failed_jobs` `password_reset_tokens` — 는 제외)
 
 ---
 
@@ -586,6 +586,27 @@ Fortify 가 쓰는 기본 구조에 회원 프로필을 확장했다. 이메일�
 - **매출이 없는 날은 행이 없다.** 일별 추이 화면이 빠진 날을 0 으로 채운다.
 - 이게 안 돌면 주문은 정상인데 **통계 화면만 과거에 멈춘다.** 그래서 대시보드·매출통계에 "집계 기준" 시각을 같이 띄운다.
 - 상품별·카테고리별 통계는 아직 이 테이블을 쓰지 않는다(실시간 집계). 상위 N개 형태라 상품×날짜 테이블이 따로 필요하다.
+
+### `daily_product_stats` — 상품별 일자별 집계 (조회 → 구매)
+
+| 컬럼 | 타입 | 설명 |
+|---|---|---|
+| `stat_date` | date | KST 달력 날짜 |
+| `product_id` | bigint → `products.id` (cascade) | |
+| `view_count` | int | ⚙ 상품 상세를 연 횟수. **이벤트 시점에 +1** |
+| `cart_count` | int | ⚙ 장바구니에 담은 **횟수**(수량이 아니다). 이벤트 시점에 +1 |
+| `order_count` | int | ⚙ 이 상품이 포함된 주문 건수. `order_items` 에서 재계산 |
+| `quantity` | int | ⚙ 판매 수량. 재계산 |
+| `revenue` | bigint | ⚙ 판매 금액(할인 전 상품 합계). 재계산 |
+
+- **인덱스:** unique(`stat_date`, `product_id`), index(`product_id`, `stat_date`)
+- **★ 컬럼이 두 종류다. 섞어서 쓰면 데이터가 날아간다.**
+  - `view_count` / `cart_count` 는 **되살릴 수 없다.** 화면 조회와 장바구니 담기는 다른 테이블에 흔적을 남기지 않아서, 그 순간에 세지 않으면 영영 알 수 없다.
+  - `order_count` / `quantity` / `revenue` 는 `order_items` 에서 **다시 만들 수 있다**(`shop:aggregate-sales`).
+  - 그래서 `ProductStatLibrary` 는 두 그룹을 건드리는 메서드를 분리했다. 재집계가 `updateOrCreate` 로 전체 컬럼을 쓰면 **조회수가 0 이 된다.**
+- 쓰는 쪽은 스토어프론트(`ProductController::show`, `CartLibrary::add`), 읽는 쪽은 관리자 상품분석 화면이다.
+- **매출은 `daily_sales_stats.revenue` 와 기준이 다르다.** 여기는 할인 전 상품 합계(`order_items.subtotal`)라 쿠폰·배송비가 빠져 있다 — 매출통계의 '상품 합계' 와 일치한다.
+- 데모 데이터는 `DemoTrafficSeeder` 가 만든다. 실제 판매량에 맞춰 조회 ≥ 장바구니 ≥ 구매 순서가 되도록 생성한다.
 
 ---
 
