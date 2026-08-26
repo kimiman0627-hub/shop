@@ -70,20 +70,20 @@ $model->forceFill([...])->save();      // dirty 체크 우회
 
 기본 정책이 0개가 되면 `defaultPolicy()` 가 예외를 던진다. **의도된 동작이다** — 조용히 0원 처리하면 주문 금액이 틀린 채로 쌓인다.
 
-### 3. `Str::slug` 는 한글을 전부 버린다
+### 3. Str::slug 는 한글을 전부 버린다
 
 `Str::slug('의류')` → `''`. 그대로 두면 모든 한글 카테고리가 `category-2`, `category-3` 이 된다.
 `CategoryLibrary::resolveSlug()` 에 한글 보존 폴백을 넣어뒀다. **상품 slug 를 만들 때 같은 처리가 필요하다.**
 
-### 4. `DB::raw` 를 무심코 쓰게 된다
+### 4. DB::raw 를 무심코 쓰게 된다
 
 카테고리 depth 재계산에 `DB::raw('depth + N')` 을 썼다가 CLAUDE.md §5.1 위반이라 `increment()`/`decrement()` 로 고쳤다. 이식성 규칙은 **쓰는 순간에는 잘 안 떠오른다.** 커밋 전에 `grep -rn "DB::raw\|whereRaw\|selectRaw" app/` 한 번.
 
-### 5. 관리자 라우트 이름에 `admin.` 을 또 붙이면 `admin.admin.`
+### 5. 관리자 라우트 이름에 admin. 을 또 붙이면 admin.admin.
 
 `bootstrap/app.php` 의 `->name('admin.')` 이 자동으로 붙는다. `routes/admin.php` 안에서는 `admin.` 없이 쓴다.
 
-### 6. PowerShell 로 `php artisan tinker --execute` 는 이스케이프가 깨진다
+### 6. PowerShell 로 php artisan tinker --execute 는 이스케이프가 깨진다
 
 `$` 와 `\` 때문에 파스 에러가 난다. **스크립트 파일로 만들어** `php artisan tinker path/to/script.php` 로 실행할 것.
 
@@ -91,7 +91,7 @@ $model->forceFill([...])->save();      // dirty 체크 우회
 
 `cd shop && ...` 없이 상대경로로 `CLAUDE.md` 를 열면 상위 폴더에 엉뚱한 파일이 생긴다. 실제로 한 번 발생했다. **절대경로를 쓸 것.**
 
-### 8. 컬럼을 추가하면 **모델 `Fillable` 에도 넣어야 한다**
+### 8. 컬럼을 추가하면 모델 Fillable 에도 넣어야 한다
 
 마이그레이션에 `orders.payment_due_at` 을 넣고 `create([...'payment_due_at' => $due])` 를 했는데,
 모델 `#[Fillable]` 에 없어서 **조용히 누락됐다.** 예외도 경고도 없다.
@@ -102,7 +102,7 @@ $model->forceFill([...])->save();      // dirty 체크 우회
 컬럼 추가 시 같이 볼 것: `Fillable`, `casts`.
 전수 점검 스크립트를 한 번 돌려볼 만하다 (`Schema::getColumnListing` vs `getFillable`).
 
-### 9. 옵션을 지운 **뒤에** 조합 이름을 만들면 틀어진다
+### 9. 옵션을 지운 뒤에 조합 이름을 만들면 틀어진다
 
 `syncOptions` 가 빠진 옵션 값을 지우면 `product_variant_values` 가 cascade 로 끊긴다.
 그 뒤에 조합 이름을 계산하면 `빨강 / S` 가 `S` 로 나온다. **조합 매칭과 오류 메시지가 둘 다 틀어진다.**
@@ -114,7 +114,7 @@ $model->forceFill([...])->save();      // dirty 체크 우회
 `resolveSku()` 가 빈 값을 받으면 새로 만들도록 짰더니, 수정 저장 때마다 SKU 가 갈렸다.
 SKU 는 재고·물류 식별자라 바깥 시스템과 어긋난다. **기존 조합이면 있던 SKU 를 지킨다.**
 
-### 11. `reserved_quantity` 는 폼에서 절대 덮어쓰지 않는다
+### 11. reserved_quantity 는 폼에서 절대 덮어쓰지 않는다
 
 시스템(주문/결제)이 관리하는 값이다. 상품 수정 폼은 `stock_quantity` 만 보낸다.
 대신 **실물을 예약분보다 적게 줄이는 것은 막는다** — 판매가능이 음수가 되기 때문이다.
@@ -169,7 +169,7 @@ $discount   = $this->coupons->discountFor($userCoupon, $itemsTotal);
 `floor(할인 × (이전누계 + 이번)/상품합계) − 이미차감액` → 마지막 건이 잔돈을 흡수한다.
 검증에서 2,333 + 4,667 = 7,000, 환불 합계 = 결제액 68,000 으로 정확히 맞았다.
 
-### 16. 관리자 메뉴를 추가하면 **기존 역할에 권한이 없다**
+### 16. 관리자 메뉴를 추가하면 기존 역할에 권한이 없다
 
 `config/admin/menu.php` 에 `STAT_SALES` 를 넣었는데 사이드바에 '통계' 가 안 떴다.
 권한의 원천은 config 지만 **판단은 DB(`admin_role_permissions`)** 가 하고,
@@ -240,7 +240,7 @@ $discount   = $this->coupons->discountFor($userCoupon, $itemsTotal);
 `DemoReviewSeeder` 는 마지막 항목 하나를 일부러 비워둔다.
 **데모 데이터는 "가득 찬 상태" 가 아니라 "만져볼 수 있는 상태" 여야 한다.**
 
-### 22. `User::create()` 에 Fillable 밖 컬럼을 넣으면 조용히 사라진다
+### 22. User::create() 에 Fillable 밖 컬럼을 넣으면 조용히 사라진다
 
 `CreateNewUser::create()` 에서 처음엔 이렇게 썼다:
 
@@ -300,7 +300,7 @@ Fortify 내장 `ProfileInformationController` 는 저장 성공 시
 않는다. `app/Listeners/` 에 클래스만 두면 된다. 추가한 뒤에는 항상
 `php artisan event:list` 로 정확히 한 번만 등록됐는지 확인한다.
 
-### 25. 브라우저 프리뷰가 Vite 개발서버가 아니라 **빌드된 정적 자산**을 서빙한다
+### 25. 브라우저 프리뷰가 Vite 개발서버가 아니라 빌드된 정적 자산을 서빙한다
 
 간편로그인 버튼을 Vue 컴포넌트로 새로 만들고 `Login.vue`/`Register.vue` 에
 연결한 뒤, 프리뷰 브라우저로 확인했는데 **버튼이 전혀 안 보였다.** 서버 쪽은
@@ -319,7 +319,7 @@ Fortify 내장 `ProfileInformationController` 는 저장 성공 시
 증상이 나오면 콘솔·네트워크보다 먼저 `preview_logs` 로 어떤 파일을 서빙
 중인지(`/build/assets/...` 해시 vs Vite 개발서버 경로) 확인할 것.
 
-### 26. 리다이렉트로 보낸 에러는 `useForm` 이 못 본다 — 화면에서 조용히 사라진다
+### 26. 리다이렉트로 보낸 에러는 useForm 이 못 본다 — 화면에서 조용히 사라진다
 
 간편로그인 실패 시 `redirect()->route('login')->withErrors(['email' => $msg])` 로
 사유를 돌려보냈는데, **로그인 화면에 아무것도 안 떴다.** 서버는 에러를 정확히
@@ -360,7 +360,7 @@ Fortify 내장 `ProfileInformationController` 는 저장 성공 시
 표시용 변환은 한 군데(헬퍼)로 모으고, 날짜가 값에 섞여 들어가는 곳(주문번호 같은)이
 없는지 따로 훑는다.
 
-### 28. `flex-1` / 그리드 칸은 `min-w-0` 없이는 줄어들지 않는다
+### 28. flex-1 / 그리드 칸은 min-w-0 없이는 줄어들지 않는다
 
 좁은 화면에서 관리자 대시보드와 매출통계에 가로 스크롤이 생겼다. `truncate` 를
 붙여놨는데도 상품명이 칸을 밀어냈다.
@@ -378,7 +378,7 @@ Fortify 내장 `ProfileInformationController` 는 저장 성공 시
 flex/grid 컨테이너**를 찾는다. 대개 `min-w-0` 한 줄이 빠져 있다. 넘치는 요소를
 찾는 데는 `getBoundingClientRect().right > clientWidth` 로 전부 훑는 스크립트가 빠르다.
 
-### 29. 표를 `overflow-x-auto` 로 감쌀 때 `v-if` 를 같이 옮겨야 한다
+### 29. 표를 overflow-x-auto 로 감쌀 때 v-if 를 같이 옮겨야 한다
 
 표 19개를 스크롤 컨테이너로 감쌌더니 빌드가 깨졌다 —
 `v-else/v-else-if has no adjacent v-if`.
