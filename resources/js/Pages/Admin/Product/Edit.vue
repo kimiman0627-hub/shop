@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import ProductImageManager from '@/Components/ProductImageManager.vue';
+import { adminField } from '@/ui';
 
 const props = defineProps({
     product: { type: Object, default: null },
@@ -151,7 +152,7 @@ const finalPrice = (labels) => {
     return base + (Number(rowFor(labels).additional_price) || 0);
 };
 
-const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminField;
 const cellClass = 'w-full rounded border border-neutral-700 bg-neutral-950 px-2 py-1 text-sm outline-none focus:border-neutral-400';
 </script>
 

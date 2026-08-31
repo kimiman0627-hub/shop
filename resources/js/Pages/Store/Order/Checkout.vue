@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
+import { storeField } from '@/ui';
 
 const props = defineProps({
     cart: { type: Object, required: true },
@@ -83,7 +84,7 @@ const copyOrderer = () => {
 
 const submit = () => form.post('/orders');
 
-const inputClass = 'mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900';
+const inputClass = storeField;
 </script>
 
 <template>

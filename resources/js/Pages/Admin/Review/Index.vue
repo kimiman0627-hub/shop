@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import StarRating from '@/Components/StarRating.vue';
+import { adminInput } from '@/ui';
 
 const props = defineProps({
     reviews: { type: Object, required: true },
@@ -40,7 +41,7 @@ const toggleStatus = (row) => {
     }, { preserveScroll: true });
 };
 
-const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminInput;
 </script>
 
 <template>

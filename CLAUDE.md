@@ -172,8 +172,11 @@ resources/js/
   Pages/                  Inertia 페이지 컴포넌트. 라우트와 1:1
     Store/
     Admin/
-  Components/             재사용 UI
-  Layouts/                StoreLayout / AdminLayout
+  Components/             재사용 UI (Pagination, Icon, CartBadge, ProductCard …)
+  Layouts/                StoreLayout / AdminLayout — 조립만 한다
+    Partials/             머리·서랍·사이드바·바닥 등 레이아웃 조각
+  Composables/            여러 컴포넌트가 공유하는 상태·목록 (useStoreNav)
+  ui.js                   되풀이되는 클래스 묶음 (adminInput, storeField …)
 database/
   migrations/
   seeders/
@@ -239,6 +242,21 @@ public function index(ProductSearchRequest $request)
   `scrollWidth > clientWidth` 로 360·375·768·1024px 를 훑는다(밟으면 아픈 곳 §28).
 - `.claude/skills/ui-ux-pro-max` 에 UX 가이드라인과 검수 체크리스트가 있다.
   **디자인 시스템 생성기로 쓰지 않는다** — 이유는 `.claude/skills/README.md` 에 적어뒀다.
+
+**컴포넌트로 뺄지 판단하는 기준**
+
+- **같은 마크업이 3곳 이상에 있으면 뺀다.** 페이지네이션이 8곳에 복사돼 있었고,
+  한 곳만 고치면 나머지 7곳이 조용히 달라진다.
+- 레이아웃 조각은 `resources/js/Layouts/Partials/` 에 둔다
+  (`StoreHeader` `StoreDrawer` `StoreBottomNav` `StoreFooter` `AdminSidebar` `AdminHeader` `AdminTodoBell`).
+  레이아웃 본체에는 **조립과 열림 상태만** 남긴다.
+- 여러 조각이 같은 목록을 봐야 하면 컴포저블로 뺀다(`Composables/useStoreNav.js` 의 `myMenu` —
+  헤더·서랍·하단 탭 세 곳이 쓴다. 각자 적어두면 메뉴 추가 때 한 곳을 반드시 빠뜨린다).
+- 되풀이되는 클래스 묶음은 `resources/js/ui.js` 에 이름을 붙여 둔다
+  (`adminInput` `storeField` `adminCard` …). **관리자(어두운 배경)와 고객(흰 배경)은
+  합치지 않는다** — 테두리·포커스 색이 반대다.
+- **의도적 변형은 억지로 합치지 않는다.** `max-w-sm` 이나 `disabled:opacity` 가 붙은 입력은
+  그대로 뒀다. 통일하려고 지우면 화면이 조용히 바뀐다.
 
 ## 5. DB 이식성 규칙 ★가장 중요★
 

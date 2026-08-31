@@ -2,6 +2,7 @@
 import { Link, router } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import OrderSummaryCard from '@/Components/OrderSummaryCard.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 defineProps({
     orders: { type: Object, required: true },
@@ -45,15 +46,6 @@ const cancel = (order) => {
 
         <p v-else class="mt-10 text-neutral-500">주문 내역이 없습니다.</p>
 
-        <div v-if="orders.last_page > 1" class="mt-8 flex justify-center gap-1">
-            <Link
-                v-for="link in orders.links"
-                :key="link.label"
-                :href="link.url ?? '#'"
-                class="rounded px-3 py-1 text-sm"
-                :class="link.active ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'"
-                v-html="link.label"
-            />
-        </div>
+        <Pagination :paginator="orders" />
     </StoreLayout>
 </template>

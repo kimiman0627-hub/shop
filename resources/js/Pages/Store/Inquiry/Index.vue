@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
+import { storeField } from '@/ui';
 
 defineProps({
     inquiries: { type: Array, required: true },
@@ -25,7 +26,7 @@ const submit = () => form.post('/inquiries', {
     },
 });
 
-const inputClass = 'mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900';
+const inputClass = storeField;
 </script>
 
 <template>

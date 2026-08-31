@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
+import { storeInput } from '@/ui';
 
 const props = defineProps({
     order: { type: Object, required: true },
@@ -67,7 +68,7 @@ const submit = () => {
     form.post(`/returns/orders/${props.order.id}`);
 };
 
-const inputClass = 'rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900';
+const inputClass = storeInput;
 </script>
 
 <template>

@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import BarSeries from '@/Components/BarSeries.vue';
+import { adminCard } from '@/ui';
 
 const props = defineProps({
     data: { type: Object, required: true },
@@ -37,7 +38,7 @@ const statusTone = {
     REFUNDED: 'bg-rose-500/15 text-rose-300',
 };
 
-const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
+const card = adminCard;
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
+import { storeField } from '@/ui';
 
 const form = useForm({ order_no: '', password: '' });
 
@@ -8,7 +9,7 @@ const submit = () => form.post('/orders/lookup', {
     onFinish: () => form.reset('password'),
 });
 
-const inputClass = 'mt-1 w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-900';
+const inputClass = storeField;
 </script>
 
 <template>

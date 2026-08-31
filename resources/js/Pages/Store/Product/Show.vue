@@ -4,6 +4,7 @@ import { Link, router, useForm, usePage } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import ProductRow from '@/Components/ProductRow.vue';
 import StarRating from '@/Components/StarRating.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     product: { type: Object, required: true },
@@ -486,17 +487,7 @@ const user = computed(() => usePage().props.auth.user);
 
                 <p v-else class="mt-6 text-sm text-neutral-500">아직 등록된 후기가 없습니다.</p>
 
-                <div v-if="reviews.list.last_page > 1" class="mt-6 flex justify-center gap-1">
-                    <Link
-                        v-for="link in reviews.list.links"
-                        :key="link.label"
-                        :href="link.url ?? '#'"
-                        preserve-scroll
-                        class="rounded px-3 py-1 text-sm"
-                        :class="link.active ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'"
-                        v-html="link.label"
-                    />
-                </div>
+                <Pagination :paginator="reviews.list" preserve-scroll center />
             </div>
 
             <!-- 상품문의 -->
@@ -574,17 +565,7 @@ const user = computed(() => usePage().props.auth.user);
 
                 <p v-else class="mt-6 text-sm text-neutral-500">아직 등록된 문의가 없습니다.</p>
 
-                <div v-if="questions.last_page > 1" class="mt-6 flex justify-center gap-1">
-                    <Link
-                        v-for="link in questions.links"
-                        :key="link.label"
-                        :href="link.url ?? '#'"
-                        preserve-scroll
-                        class="rounded px-3 py-1 text-sm"
-                        :class="link.active ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'"
-                        v-html="link.label"
-                    />
-                </div>
+                <Pagination :paginator="questions" />
             </div>
         </section>
 

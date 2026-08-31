@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     orders: { type: Object, required: true },
@@ -237,15 +238,6 @@ const filterClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py
             해당하는 주문이 없습니다.
         </p>
 
-        <div v-if="orders.last_page > 1" class="mt-6 flex gap-1">
-            <Link
-                v-for="link in orders.links"
-                :key="link.label"
-                :href="link.url ?? '#'"
-                class="rounded px-3 py-1 text-sm"
-                :class="link.active ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:bg-neutral-900'"
-                v-html="link.label"
-            />
-        </div>
+        <Pagination :paginator="orders" theme="dark" />
     </AdminLayout>
 </template>

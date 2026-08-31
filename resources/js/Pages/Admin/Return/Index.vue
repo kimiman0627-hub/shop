@@ -2,6 +2,7 @@
 import { computed, reactive, watch } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { adminInput } from '@/ui';
 
 const props = defineProps({
     returns: { type: Object, required: true },
@@ -86,7 +87,7 @@ const preview = computed(() => estimates.value?.[form.responsibility] ?? null);
 // 승인 전에는 예상액을, 승인 후에는 확정 스냅샷을 보여준다.
 const amounts = computed(() => preview.value ?? detail.value);
 
-const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminInput;
 const btn = 'rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-40';
 </script>
 

@@ -2,6 +2,8 @@
 import { computed, reactive, ref } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import { adminInput } from '@/ui';
 
 const props = defineProps({
     payments: { type: Object, required: true },
@@ -51,7 +53,7 @@ const cancel_ = (row) => {
 
 const won = (n) => `${Number(n ?? 0).toLocaleString('ko-KR')}원`;
 
-const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminInput;
 </script>
 
 <template>
@@ -161,15 +163,6 @@ const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-
             해당하는 건이 없습니다.
         </p>
 
-        <div v-if="payments.last_page > 1" class="mt-6 flex gap-1">
-            <Link
-                v-for="link in payments.links"
-                :key="link.label"
-                :href="link.url ?? '#'"
-                class="rounded px-3 py-1 text-sm"
-                :class="link.active ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:bg-neutral-900'"
-                v-html="link.label"
-            />
-        </div>
+        <Pagination :paginator="payments" theme="dark" />
     </AdminLayout>
 </template>

@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { adminField } from '@/ui';
 
 const admin = computed(() => usePage().props.auth.admin);
 
@@ -15,7 +16,7 @@ const submit = () => form.put('/admin/profile/password', {
     onSuccess: () => form.reset(),
 });
 
-const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminField;
 </script>
 
 <template>

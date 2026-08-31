@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import StoreLayout from '@/Layouts/StoreLayout.vue';
 import ProductCard from '@/Components/ProductCard.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
     products: { type: Object, required: true },
@@ -43,17 +44,6 @@ const search = () => router.get('/products', {
             조건에 맞는 상품이 없습니다.
         </p>
 
-        <div v-if="products.last_page > 1" class="mt-10 flex justify-center gap-1">
-            <Link
-                v-for="link in products.links"
-                :key="link.label"
-                :href="link.url ?? '#'"
-                class="rounded px-3 py-1 text-sm"
-                :class="link.active
-                    ? 'bg-neutral-900 text-white'
-                    : link.url ? 'text-neutral-600 hover:bg-neutral-100' : 'text-neutral-300'"
-                v-html="link.label"
-            />
-        </div>
+        <Pagination :paginator="products" />
     </StoreLayout>
 </template>

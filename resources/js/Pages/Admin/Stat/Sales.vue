@@ -3,6 +3,7 @@ import { computed, reactive } from 'vue';
 import { router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import BarSeries from '@/Components/BarSeries.vue';
+import { adminCard, adminInput } from '@/ui';
 
 const props = defineProps({
     filters: { type: Object, required: true },
@@ -41,8 +42,8 @@ const categoryMax = computed(
     () => Math.max(1, ...props.byCategory.map((c) => c.amount)),
 );
 
-const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
-const card = 'rounded-xl border border-neutral-800 bg-neutral-900/30 p-5';
+const inputClass = adminInput;
+const card = adminCard;
 </script>
 
 <template>

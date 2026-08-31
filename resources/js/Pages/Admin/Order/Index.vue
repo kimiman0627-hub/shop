@@ -2,6 +2,8 @@
 import { reactive } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import { adminInput } from '@/ui';
 
 const props = defineProps({
     orders: { type: Object, required: true },
@@ -36,7 +38,7 @@ const statusClass = (status) => ({
     'bg-red-500/15 text-red-300': status === 'CANCELED' || status === 'REFUNDED',
 });
 
-const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminInput;
 </script>
 
 <template>
@@ -117,15 +119,6 @@ const inputClass = 'rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-
             조건에 맞는 주문이 없습니다.
         </p>
 
-        <div v-if="orders.last_page > 1" class="mt-6 flex gap-1">
-            <Link
-                v-for="link in orders.links"
-                :key="link.label"
-                :href="link.url ?? '#'"
-                class="rounded px-3 py-1 text-sm"
-                :class="link.active ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:bg-neutral-900'"
-                v-html="link.label"
-            />
-        </div>
+        <Pagination :paginator="orders" theme="dark" />
     </AdminLayout>
 </template>

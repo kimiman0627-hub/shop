@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
+import { adminField } from '@/ui';
 
 const props = defineProps({
     detail: { type: Object, required: true },
@@ -76,7 +77,7 @@ const pendingCount = computed(
     () => props.detail.inquiries.filter((i) => i.status === 'PENDING').length,
 );
 
-const inputClass = 'mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm outline-none focus:border-neutral-400';
+const inputClass = adminField;
 </script>
 
 <template>
