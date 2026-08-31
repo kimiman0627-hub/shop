@@ -187,7 +187,7 @@ docs/                 ← 이 폴더를 옵시디언 볼트로 열 수 있다
   홈.md               문서 색인 (볼트 시작점)
   tables.md           테이블 32개 레퍼런스 (컬럼 설명 포함)
   schema-draft.md     설계 의도 · 결정 사항
-  worklog.md          "왜 그렇게 했는가" + 밟은 함정 29개
+  worklog.md          "왜 그렇게 했는가" + 밟은 함정 31개
 ```
 
 ---
@@ -199,7 +199,7 @@ docs/                 ← 이 폴더를 옵시디언 볼트로 열 수 있다
 | [`CLAUDE.md`](CLAUDE.md) | 작업 규칙 · 기술 스택 · 남은 작업 체크리스트 |
 | [`docs/tables.md`](docs/tables.md) | 테이블 · 컬럼 전체 레퍼런스 (실제 스키마에서 추출) |
 | [`docs/schema-draft.md`](docs/schema-draft.md) | 설계 의도와 확정 사항 |
-| [`docs/worklog.md`](docs/worklog.md) | 기능별 설계 근거 + **밟으면 아픈 곳 29개** |
+| [`docs/worklog.md`](docs/worklog.md) | 기능별 설계 근거 + **밟으면 아픈 곳 31개** |
 | [`docs/홈.md`](docs/홈.md) | 문서 색인. `docs/` 를 **옵시디언 볼트**로 열면 시작점이 된다 |
 
 ---
