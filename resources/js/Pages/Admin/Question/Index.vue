@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { adminInput } from '@/ui';
+import Icon from '@/Components/Icon.vue';
 
 const props = defineProps({
     questions: { type: Object, required: true },
@@ -77,7 +78,7 @@ const inputClass = adminInput;
                                     ? 'bg-emerald-500/15 text-emerald-300'
                                     : 'bg-amber-500/15 text-amber-300'"
                             >{{ row.status_label }}</span>
-                            <span v-if="row.is_secret" title="비밀글">🔒</span>
+                            <Icon v-if="row.is_secret" name="lock" class="inline-block size-3.5 text-neutral-500" title="비밀글" />
                             {{ row.author }} · {{ row.created_at }}
                         </p>
                     </div>
